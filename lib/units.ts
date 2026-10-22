@@ -116,14 +116,29 @@ function unitName(label: string, amount: number) {
   return lower;
 }
 
+const localeLimit = 100_000_000;
+const scientificFloor = 0.000001;
+
 export function formatUnitValue(value: number) {
+  if (!Number.isFinite(value)) {
+    return "—";
+  }
+
   if (value === 0) {
     return "0";
   }
 
   const absolute = Math.abs(value);
-  const digits = absolute >= 1000 || absolute < 0.001 ? 6 : 8;
-  return trim(value.toPrecision(digits));
+
+  if (absolute >= localeLimit || absolute < scientificFloor) {
+    return trim(value.toExponential(6));
+  }
+
+  const precise = Number(value.toPrecision(8));
+  return precise.toLocaleString("en-US", {
+    maximumFractionDigits: 8,
+    useGrouping: true,
+  });
 }
 
 function trim(value: string) {
@@ -131,5 +146,5 @@ function trim(value: string) {
     return value.replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
   }
 
-  return value.replace(/(\.\d*?)0+e/, "e").replace(/\.e/, "e");
+  return value.replace(/(\.\d*?)0+e/, "$1e").replace(/\.e/, "e");
 }
