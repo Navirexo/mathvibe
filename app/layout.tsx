@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import "./globals.css";
@@ -26,6 +27,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <Header />
         <main id="main" className="flex-1">
+          <div className="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6">
+            <AdSlot placement="leaderboard" />
+          </div>
           {children}
         </main>
         <Footer />

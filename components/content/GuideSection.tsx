@@ -138,7 +138,7 @@ export function GuideSection({ includeSchema = false }: { includeSchema?: boolea
             Accuracy, everyday use, and how the step-by-step solvers are built.
           </p>
           <div className="mt-6">
-            <FaqAccordion items={faqs} />
+            <FaqAccordion items={faqs} idPrefix="guide-faq" />
           </div>
         </div>
       </div>

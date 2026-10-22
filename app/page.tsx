@@ -1,6 +1,17 @@
+import type { Metadata } from "next";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { GuideSection } from "@/components/content/GuideSection";
 import { AmbientGlow } from "@/components/home/AmbientGlow";
 import { HomeExplorer } from "@/components/home/HomeExplorer";
+import { pageMetadata } from "@/lib/seo";
+
+const description = "Fast, accessible, and step-by-step mathematical solutions.";
+
+export const metadata: Metadata = pageMetadata({
+  title: "MathVibe — Smart Math Tools & Calculators",
+  description,
+  path: "/",
+});
 
 export default function Home() {
   return (
@@ -21,6 +32,7 @@ export default function Home() {
         </div>
       </section>
       <HomeExplorer />
+      <AdSlot placement="rectangle" />
       <GuideSection includeSchema />
     </div>
   );

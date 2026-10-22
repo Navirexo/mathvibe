@@ -1,8 +1,11 @@
-import type { Metadata } from "next";
 import Link from "next/link";
+import { AdSlot } from "@/components/ads/AdSlot";
 import { FractionConverter } from "@/components/calculators/FractionConverter";
+import { FaqAccordion } from "@/components/content/FaqAccordion";
+import { FractionWriteup } from "@/components/content/FractionWriteup";
 import { GuideSection } from "@/components/content/GuideSection";
-import { evaluateFraction, type FractionResult } from "@/lib/math";
+import { evaluateFraction } from "@/lib/math";
+import { pageMetadata } from "@/lib/seo";
 
 const examples = ["5/6", "3/4", "7/8"] as const;
 
@@ -19,25 +22,27 @@ const workedExamples = examples.map((example) => {
 const pageDescription =
   "Convert fractions such as 5/6, 3/4, and 7/8 into decimals, percents, and equivalent fractions, with a step-by-step breakdown.";
 
-export const metadata: Metadata = {
+const converterFaqs = [
+  {
+    question: "How do you convert a fraction to a decimal?",
+    answer: "Divide the numerator by the denominator. For example, 3/4 = 3 ÷ 4 = 0.75.",
+  },
+  {
+    question: "How do you convert a fraction to a percent?",
+    answer: "Multiply the fraction by 100. For example, 7/8 = (7 × 100) ÷ 8 = 87.5%.",
+  },
+  {
+    question: "What is an equivalent fraction?",
+    answer:
+      "An equivalent fraction has the same value after the numerator and denominator are multiplied by the same whole number. 1/2, 2/4, and 3/6 are equivalent.",
+  },
+];
+
+export const metadata = pageMetadata({
   title: "Fraction & Decimal Converter — MathVibe",
   description: pageDescription,
-  alternates: {
-    canonical: "/calculators/fraction-converter",
-  },
-  openGraph: {
-    title: "Fraction & Decimal Converter — MathVibe",
-    description: pageDescription,
-    url: "/calculators/fraction-converter",
-    siteName: "MathVibe",
-    type: "website",
-  },
-  twitter: {
-    card: "summary",
-    title: "Fraction & Decimal Converter — MathVibe",
-    description: pageDescription,
-  },
-};
+  path: "/calculators/fraction-converter",
+});
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -85,32 +90,14 @@ const structuredData = {
     },
     {
       "@type": "FAQPage",
-      mainEntity: [
-        {
-          "@type": "Question",
-          name: "How do you convert a fraction to a decimal?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Divide the numerator by the denominator. For example, 3/4 = 3 ÷ 4 = 0.75.",
-          },
+      mainEntity: converterFaqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
         },
-        {
-          "@type": "Question",
-          name: "How do you convert a fraction to a percent?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Multiply the fraction by 100. For example, 7/8 = (7 × 100) ÷ 8 = 87.5%.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "What is an equivalent fraction?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "An equivalent fraction has the same value after the numerator and denominator are multiplied by the same whole number. 1/2, 2/4, and 3/6 are equivalent.",
-          },
-        },
-      ],
+      })),
     },
   ],
 };
@@ -150,20 +137,16 @@ export default function FractionConverterPage() {
 
       <FractionConverter />
 
-      <section aria-labelledby="method-heading" className="max-w-3xl">
-        <h2 id="method-heading" className="text-xl font-semibold text-ink">
-          How the conversion works
+      <AdSlot placement="rectangle" />
+
+      <FractionWriteup examples={workedExamples} />
+
+      <section aria-labelledby="converter-faq-heading" className="max-w-3xl">
+        <h2 id="converter-faq-heading" className="text-xl font-semibold text-ink">
+          Frequently Asked Questions
         </h2>
-        <p className="mt-3 text-sm text-muted sm:text-base">
-          A fraction a/b is the division a ÷ b. That quotient is the decimal.
-          Multiplying the decimal by 100, which is the same as (a × 100) ÷ b,
-          gives the percent. Equivalent fractions keep the same value when the
-          numerator and denominator are multiplied by the same whole number.
-        </p>
-        <div className="mt-8 flex flex-col gap-8">
-          {workedExamples.map((example) => (
-            <WorkedExample key={example.fraction} result={example} />
-          ))}
+        <div className="mt-6">
+          <FaqAccordion items={converterFaqs} idPrefix="converter-faq" />
         </div>
       </section>
 
@@ -176,23 +159,5 @@ export default function FractionConverterPage() {
         }}
       />
     </div>
-  );
-}
-
-function WorkedExample({ result }: { result: FractionResult }) {
-  return (
-    <article>
-      <h3 className="text-lg font-semibold text-ink">
-        {result.fraction} = {result.decimal} = {result.percent}
-      </h3>
-      <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-muted">
-        {result.steps.map((step) => (
-          <li key={step.title}>
-            <span className="font-medium text-ink">{step.title}. </span>
-            {step.body}
-          </li>
-        ))}
-      </ol>
-    </article>
   );
 }

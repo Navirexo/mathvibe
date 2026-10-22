@@ -9,15 +9,21 @@ export type FaqItem = {
   answer: string;
 };
 
-export function FaqAccordion({ items }: { items: FaqItem[] }) {
+export function FaqAccordion({
+  items,
+  idPrefix = "faq",
+}: {
+  items: FaqItem[];
+  idPrefix?: string;
+}) {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
     <div className="flex flex-col gap-3">
       {items.map((item, index) => {
         const open = openIndex === index;
-        const panelId = `faq-panel-${index}`;
-        const buttonId = `faq-button-${index}`;
+        const panelId = `${idPrefix}-panel-${index}`;
+        const buttonId = `${idPrefix}-button-${index}`;
 
         return (
           <Card key={item.question}>

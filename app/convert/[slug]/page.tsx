@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
+import { AdSlot } from "@/components/ads/AdSlot";
+import { FaqAccordion } from "@/components/content/FaqAccordion";
+import { FractionWriteup } from "@/components/content/FractionWriteup";
 import { GuideSection } from "@/components/content/GuideSection";
 import { Card } from "@/components/ui/Card";
-import type { FractionResult } from "@/lib/math";
+import { pageMetadata } from "@/lib/seo";
 import {
   conversionFaqs,
   conversionHeadline,
@@ -39,25 +42,11 @@ export async function generateMetadata({
 
   const metadata = generateConversionMetadata(conversion);
 
-  return {
+  return pageMetadata({
     title: metadata.title,
     description: metadata.description,
-    alternates: {
-      canonical: metadata.canonical,
-    },
-    openGraph: {
-      title: metadata.title,
-      description: metadata.description,
-      url: metadata.canonical,
-      siteName: "MathVibe",
-      type: "website",
-    },
-    twitter: {
-      card: "summary",
-      title: metadata.title,
-      description: metadata.description,
-    },
-  };
+    path: metadata.canonical,
+  });
 }
 
 export default async function ConversionPage({ params }: ConvertPageProps) {
@@ -146,6 +135,8 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
           <ResultCard title="Decimal" value={conversion.result.decimal} />
         </section>
 
+        <AdSlot placement="rectangle" />
+
         <Card>
           <h2 className="text-lg font-semibold text-ink">Step-by-Step Math</h2>
           <ol className="mt-4 space-y-4">
@@ -163,22 +154,14 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
           </ol>
         </Card>
 
+        <FractionWriteup examples={examples} />
+
         <section aria-labelledby="faq-heading">
           <h2 id="faq-heading" className="text-xl font-semibold text-ink">
-            Frequently Asked Questions & Worked Examples
+            Frequently Asked Questions
           </h2>
-          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-            {faqs.map((faq) => (
-              <Card key={faq.question}>
-                <h3 className="text-base font-semibold text-ink">{faq.question}</h3>
-                <p className="mt-2 text-sm text-muted">{faq.answer}</p>
-              </Card>
-            ))}
-          </div>
-          <div className="mt-8 flex flex-col gap-8">
-            {examples.map((example) => (
-              <WorkedExample key={example.fraction} result={example} />
-            ))}
+          <div className="mt-6">
+            <FaqAccordion items={faqs} idPrefix="conversion-faq" />
           </div>
           <Card className="mt-8">
             <h3 className="text-base font-semibold text-ink">Related conversions</h3>
@@ -262,24 +245,6 @@ function ResultCard({
       </p>
       {detail ? <p className="mt-3 text-sm text-muted">{detail}</p> : null}
     </Card>
-  );
-}
-
-function WorkedExample({ result }: { result: FractionResult }) {
-  return (
-    <article>
-      <h3 className="text-lg font-semibold text-ink">
-        {result.fraction} = {result.decimal} = {result.percent}
-      </h3>
-      <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-muted">
-        {result.steps.map((step) => (
-          <li key={step.title}>
-            <span className="font-medium text-ink">{step.title}. </span>
-            {step.body}
-          </li>
-        ))}
-      </ol>
-    </article>
   );
 }
 
