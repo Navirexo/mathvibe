@@ -246,8 +246,9 @@ export function ScientificCalculator() {
               variant={key.tone === "equals" ? "primary" : key.tone === "operator" ? "secondary" : "ghost"}
               aria-label={key.aria}
               className={cn(
-                "w-full px-1 text-xs sm:text-sm",
-                key.tone === "digit" && "bg-midnight",
+                "w-full px-2 text-xs sm:text-sm",
+                key.tone !== "equals" &&
+                  "border !border-cyan-500/35 !bg-midnight !text-ink !shadow-none hover:!border-violet/80 hover:!bg-[#111C2D]",
                 key.span === 2 && "col-span-2",
               )}
               onMouseDown={(event) => event.preventDefault()}

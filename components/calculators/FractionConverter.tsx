@@ -66,7 +66,7 @@ export function FractionConverter() {
             Copy result
           </Button>
           <Button
-            variant="ghost"
+            variant="secondary"
             className="w-full sm:w-auto"
             onClick={reset}
             disabled={!value}
