@@ -2,12 +2,18 @@ import { cn } from "@/lib/cn";
 
 type AdPlacement = "leaderboard" | "rectangle";
 
+const SHOW_ADS = false;
+
 const frames: Record<AdPlacement, string> = {
   leaderboard: "min-h-[90px] w-full max-w-[728px]",
   rectangle: "min-h-[250px] w-full max-w-[336px]",
 };
 
 export function AdSlot({ placement }: { placement: AdPlacement }) {
+  if (!SHOW_ADS) {
+    return null;
+  }
+
   return (
     <aside aria-label="Advertisement" className="flex justify-center">
       <div
