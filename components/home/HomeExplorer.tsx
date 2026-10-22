@@ -3,7 +3,7 @@
 import { AmbientGlow } from "@/components/home/AmbientGlow";
 import { ToolPreview } from "@/components/home/ToolPreview";
 import { ToolSearch } from "@/components/home/ToolSearch";
-import { Button, gradientActionClass } from "@/components/ui/Button";
+import { gradientActionClass, secondaryActionClass } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/cn";
 import { filterCatalog } from "@/lib/tools";
@@ -16,11 +16,6 @@ export function HomeExplorer() {
   const results = useMemo(() => filterCatalog(query), [query]);
   const searching = query.trim().length > 0;
   const resultCount = results.categories.length + results.tools.length;
-
-  function searchFor(next: string) {
-    setQuery(next);
-    inputRef.current?.focus();
-  }
 
   return (
     <>
@@ -58,13 +53,12 @@ export function HomeExplorer() {
                   <p className="mt-2 flex-1 text-sm text-muted">
                     {category.summary}
                   </p>
-                  <Button
-                    variant="secondary"
-                    className="mt-5 w-full"
-                    onClick={() => searchFor(category.name)}
+                  <Link
+                    href={category.href}
+                    className={cn("mt-5 w-full", secondaryActionClass)}
                   >
-                    Search category
-                  </Button>
+                    {category.cta}
+                  </Link>
                 </Card>
               </li>
             ))}
@@ -94,22 +88,12 @@ export function HomeExplorer() {
                     {tool.name}
                   </h3>
                   <p className="mt-2 flex-1 text-sm text-muted">{tool.summary}</p>
-                  {tool.href ? (
-                    <Link
-                      href={tool.href}
-                      className={cn("mt-5 w-full", gradientActionClass)}
-                    >
-                      Open converter
-                    </Link>
-                  ) : (
-                    <Button
-                      variant="gradient"
-                      className="mt-5 w-full"
-                      onClick={() => searchFor(tool.name)}
-                    >
-                      Search this tool
-                    </Button>
-                  )}
+                  <Link
+                    href={tool.href}
+                    className={cn("mt-5 w-full", gradientActionClass)}
+                  >
+                    {tool.cta}
+                  </Link>
                 </Card>
               </li>
             ))}

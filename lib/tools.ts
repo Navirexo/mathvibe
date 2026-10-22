@@ -3,21 +3,29 @@ export const categories = [
     id: "calculators",
     name: "Calculators",
     summary: "Everyday and scientific calculations, ready when you are.",
+    href: "/scientific-calculator",
+    cta: "Open calculator",
   },
   {
     id: "converters",
     name: "Fraction & Decimal Converters",
     summary: "Move between fractions, decimals, and percents.",
+    href: "/calculators/fraction-converter",
+    cta: "Open converter",
   },
   {
     id: "solvers",
     name: "Scientific Solvers",
     summary: "Work through equations with the steps kept visible.",
+    href: "/scientific-solvers",
+    cta: "Open solver",
   },
   {
     id: "guides",
     name: "Educational Guides",
     summary: "Short explanations for the ideas behind the tools.",
+    href: "/guides",
+    cta: "Open guide",
   },
 ] as const;
 
@@ -28,8 +36,9 @@ export type Tool = {
   name: string;
   category: CategoryName;
   summary: string;
+  href: string;
+  cta: string;
   popular?: boolean;
-  href?: string;
 };
 
 export const tools: Tool[] = [
@@ -38,6 +47,8 @@ export const tools: Tool[] = [
     name: "Scientific Calculator",
     category: "Calculators",
     summary: "Trig, powers, roots, and scientific notation.",
+    href: "/scientific-calculator",
+    cta: "Open calculator",
     popular: true,
   },
   {
@@ -45,15 +56,34 @@ export const tools: Tool[] = [
     name: "Fraction-to-Percent Converter",
     category: "Fraction & Decimal Converters",
     summary: "Turn a fraction into a percent, with the steps shown.",
-    popular: true,
     href: "/calculators/fraction-converter",
+    cta: "Open converter",
+    popular: true,
   },
   {
     id: "unit-converter",
     name: "Unit Converter",
     category: "Calculators",
     summary: "Convert length, mass, and volume without the busywork.",
+    href: "/unit-converter",
+    cta: "Open converter",
     popular: true,
+  },
+  {
+    id: "equation-solver",
+    name: "Equation Solver",
+    category: "Scientific Solvers",
+    summary: "Solve linear and quadratic equations with the algebra shown.",
+    href: "/scientific-solvers",
+    cta: "Open solver",
+  },
+  {
+    id: "educational-guides",
+    name: "Educational Guides",
+    category: "Educational Guides",
+    summary: "Practice scientific notation, percents, and powers of ten.",
+    href: "/guides",
+    cta: "Open guide",
   },
 ];
 
