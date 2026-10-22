@@ -13,6 +13,14 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://mathvibe.net"),
   title: "MathVibe — Smart Math Tools & Calculators",
   description: "Fast, accessible, and step-by-step mathematical solutions.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
