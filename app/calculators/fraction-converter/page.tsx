@@ -5,7 +5,9 @@ import { FaqAccordion } from "@/components/content/FaqAccordion";
 import { FractionWriteup } from "@/components/content/FractionWriteup";
 import { GuideSection } from "@/components/content/GuideSection";
 import { evaluateFraction } from "@/lib/math";
+import { roundDisplayedFraction } from "@/lib/rounding";
 import { pageMetadata } from "@/lib/seo";
+import { siteUrl } from "@/lib/site";
 
 const examples = ["5/6", "3/4", "7/8"] as const;
 
@@ -16,7 +18,7 @@ const workedExamples = examples.map((example) => {
     throw new Error(`Expected ${example} to convert.`);
   }
 
-  return evaluation.result;
+  return roundDisplayedFraction(evaluation.result, 6, 2);
 });
 
 const pageDescription =
@@ -52,7 +54,7 @@ const structuredData = {
       name: "Fraction & Decimal Converter",
       applicationCategory: "EducationalApplication",
       operatingSystem: "Web",
-      url: "https://mathvibe.net/calculators/fraction-converter",
+      url: `${siteUrl}/calculators/fraction-converter`,
       description: pageDescription,
       offers: {
         "@type": "Offer",
@@ -74,12 +76,12 @@ const structuredData = {
         {
           "@type": "HowToStep",
           name: "Divide to find the decimal",
-          text: "Decimal = numerator ÷ denominator. For 5/6, 5 ÷ 6 = 0.8(3).",
+          text: "Decimal = numerator ÷ denominator. For 5/6, the page shows 5 ÷ 6 = 0.833333. The exact decimal repeats as 0.8(3).",
         },
         {
           "@type": "HowToStep",
           name: "Multiply by 100 to find the percent",
-          text: "Percent = (numerator × 100) ÷ denominator. For 5/6, 500 ÷ 6 = 83.(3)%.",
+          text: "Percent = (numerator × 100) ÷ denominator. For 5/6, the page shows 500 ÷ 6 = 83.33%. The exact percent repeats as 83.(3)%.",
         },
         {
           "@type": "HowToStep",
@@ -139,7 +141,7 @@ export default function FractionConverterPage() {
 
       <AdSlot placement="rectangle" />
 
-      <FractionWriteup examples={workedExamples} />
+      <FractionWriteup examples={workedExamples} rounded decimalPlaces={6} percentPlaces={2} />
 
       <section aria-labelledby="converter-faq-heading" className="max-w-3xl">
         <h2 id="converter-faq-heading" className="text-xl font-semibold text-ink">

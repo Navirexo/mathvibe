@@ -7,6 +7,7 @@ import { FractionWriteup } from "@/components/content/FractionWriteup";
 import { GuideSection } from "@/components/content/GuideSection";
 import { Card } from "@/components/ui/Card";
 import { pageMetadata } from "@/lib/seo";
+import { siteUrl } from "@/lib/site";
 import {
   conversionFaqs,
   conversionHeadline,
@@ -75,19 +76,19 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "https://mathvibe.net/",
+            item: `${siteUrl}/`,
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Converters",
-            item: "https://mathvibe.net/calculators/fraction-converter",
+            item: `${siteUrl}/calculators/fraction-converter`,
           },
           {
             "@type": "ListItem",
             position: 3,
             name: conversion.label,
-            item: `https://mathvibe.net${metadata.canonical}`,
+            item: `${siteUrl}${metadata.canonical}`,
           },
         ],
       },

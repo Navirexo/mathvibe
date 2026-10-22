@@ -300,13 +300,36 @@ class PolyParser {
     }
 
     this.index += 1;
-    const scaled = inner.map((term) => ({
+
+    let expanded = inner;
+    const raised = this.peek() === "^";
+
+    if (raised) {
+      const power = this.readPower();
+
+      if (power === 0) {
+        expanded = [{ coefficient: 1, power: 0 }];
+      } else {
+        for (let count = 1; count < power; count += 1) {
+          expanded = multiplyPolynomial(expanded, inner);
+        }
+      }
+
+      this.expansions.push(
+        `(${joinUncombined(inner)})^${power} = ${formatPolynomial(combine(expanded))}.`,
+      );
+    }
+
+    const scaled = expanded.map((term) => ({
       coefficient: term.coefficient * factor,
       power: term.power,
     }));
-    this.expansions.push(
-      `${formatFactor(factor)}(${joinUncombined(inner)}) = ${joinUncombined(scaled)}.`,
-    );
+
+    if (!raised || Math.abs(factor - 1) >= 1e-9) {
+      this.expansions.push(
+        `${formatFactor(factor)}(${joinUncombined(expanded)}) = ${joinUncombined(scaled)}.`,
+      );
+    }
 
     return scaled;
   }
@@ -366,6 +389,21 @@ class PolyParser {
   private peek() {
     return this.source[this.index] ?? "";
   }
+}
+
+function multiplyPolynomial(left: Term[], right: Term[]) {
+  const products: Term[] = [];
+
+  for (const first of left) {
+    for (const second of right) {
+      products.push({
+        coefficient: first.coefficient * second.coefficient,
+        power: first.power + second.power,
+      });
+    }
+  }
+
+  return products;
 }
 
 function combine(terms: Term[]) {

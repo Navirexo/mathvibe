@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const geist = Geist({
@@ -10,7 +11,7 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mathvibe.net"),
+  metadataBase: new URL(siteUrl),
   title: "MathVibe — Smart Math Tools & Calculators",
   description: "Fast, accessible, and step-by-step mathematical solutions.",
   icons: {

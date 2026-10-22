@@ -43,7 +43,7 @@ const faqs: FaqItem[] = [
   {
     question: "How accurate are MathVibe calculations?",
     answer:
-      "Fraction conversions use exact integer division. A repeating decimal is written with the repeating digits in parentheses, so 5/6 is 0.8(3) and 83.(3)%, rather than a rounded approximation.",
+      "The Fraction & Decimal Converter shows 5/6 as 0.833333 and 83.33%, rounded to 6 decimal places and 2 percent places. Conversion pages round the same fraction to 0.8333 and 83.33%. The exact repeating value is 0.8(3), or 83.(3)%.",
   },
   {
     question: "How do I use MathVibe?",
