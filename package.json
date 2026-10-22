@@ -1,7 +1,8 @@
 {
-  "name": "mathvibe.com",
+  "name": "mathvibe",
   "version": "0.1.0",
   "private": true,
+  "description": "MathVibe (mathvibe.net)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
