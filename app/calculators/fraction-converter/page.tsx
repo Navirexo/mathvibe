@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FractionConverter } from "@/components/calculators/FractionConverter";
+import { GuideSection } from "@/components/content/GuideSection";
 import { evaluateFraction, type FractionResult } from "@/lib/math";
 
 const examples = ["5/6", "3/4", "7/8"] as const;
@@ -165,6 +166,8 @@ export default function FractionConverterPage() {
           ))}
         </div>
       </section>
+
+      <GuideSection />
 
       <script
         type="application/ld+json"

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
+import { GuideSection } from "@/components/content/GuideSection";
 import { Card } from "@/components/ui/Card";
 import type { FractionResult } from "@/lib/math";
 import {
@@ -196,6 +197,8 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
           </Card>
         </section>
       </article>
+
+      <GuideSection />
 
       <script
         type="application/ld+json"

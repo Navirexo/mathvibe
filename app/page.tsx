@@ -1,3 +1,4 @@
+import { GuideSection } from "@/components/content/GuideSection";
 import { AmbientGlow } from "@/components/home/AmbientGlow";
 import { HomeExplorer } from "@/components/home/HomeExplorer";
 
@@ -20,6 +21,7 @@ export default function Home() {
         </div>
       </section>
       <HomeExplorer />
+      <GuideSection includeSchema />
     </div>
   );
 }
