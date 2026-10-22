@@ -67,11 +67,28 @@ const faqs: FaqItem[] = [
   },
 ];
 
-export function GuideSection({ includeSchema = false }: { includeSchema?: boolean }) {
+export function GuideSection({
+  includeSchema = false,
+  roundedAccuracy = false,
+}: {
+  includeSchema?: boolean;
+  roundedAccuracy?: boolean;
+}) {
+  const items = roundedAccuracy
+    ? faqs.map((faq) =>
+        faq.question === "How accurate are MathVibe calculations?"
+          ? {
+              ...faq,
+              answer:
+                "Fraction conversions on these pages round decimals to 4 places and percentages to 2 places. 5/6 is shown as 0.8333 and 83.33%.",
+            }
+          : faq,
+      )
+    : faqs;
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
+    mainEntity: items.map((faq) => ({
       "@type": "Question",
       name: faq.question,
       acceptedAnswer: {
@@ -138,7 +155,7 @@ export function GuideSection({ includeSchema = false }: { includeSchema?: boolea
             Accuracy, everyday use, and how the step-by-step solvers are built.
           </p>
           <div className="mt-6">
-            <FaqAccordion items={faqs} idPrefix="guide-faq" />
+            <FaqAccordion items={items} idPrefix="guide-faq" />
           </div>
         </div>
       </div>

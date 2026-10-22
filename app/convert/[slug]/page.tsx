@@ -154,7 +154,7 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
           </ol>
         </Card>
 
-        <FractionWriteup examples={examples} />
+        <FractionWriteup examples={examples} rounded />
 
         <section aria-labelledby="faq-heading">
           <h2 id="faq-heading" className="text-xl font-semibold text-ink">
@@ -181,7 +181,7 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
         </section>
       </article>
 
-      <GuideSection />
+      <GuideSection roundedAccuracy />
 
       <script
         type="application/ld+json"

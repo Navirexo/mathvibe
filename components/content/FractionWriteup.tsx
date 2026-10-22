@@ -1,6 +1,12 @@
 import type { FractionResult } from "@/lib/math";
 
-export function FractionWriteup({ examples }: { examples: FractionResult[] }) {
+export function FractionWriteup({
+  examples,
+  rounded = false,
+}: {
+  examples: FractionResult[];
+  rounded?: boolean;
+}) {
   const focus = examples[0];
 
   return (
@@ -37,9 +43,10 @@ export function FractionWriteup({ examples }: { examples: FractionResult[] }) {
           <p>
             Simplest form divides the numerator and denominator by their
             greatest common divisor. {focus.fraction} in simplest form is{" "}
-            {focus.simplified}. Repeating decimals keep the repeating digits in
-            parentheses, so the displayed value stays exact instead of rounding
-            to a short float.
+            {focus.simplified}.{" "}
+            {rounded
+              ? `Decimals are rounded to 4 places and percentages to 2 places, so ${focus.fraction} is shown as ${focus.decimal} and ${focus.percent}.`
+              : "Repeating decimals keep the repeating digits in parentheses, so the displayed value stays exact instead of rounding to a short float."}
           </p>
         </div>
       </section>
