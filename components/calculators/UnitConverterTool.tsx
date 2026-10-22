@@ -13,21 +13,55 @@ const preferredUnits: Record<UnitDimension, [string, string]> = {
   volume: ["l", "gal"],
 };
 
+const numericText = /^[+-]?(?:\d[\d,]*\.?\d*|\.\d*)$/;
+
+function extractNumericText(input: string) {
+  const match = input.match(/[+-]?(?:\d[\d,]*\.?\d*|\.\d+)/);
+
+  if (!match || !/\d/.test(match[0])) {
+    return null;
+  }
+
+  return match[0].replace(/,/g, "").replace(/\.$/, "");
+}
+
+function readAmount(input: string) {
+  const trimmed = input.trim().replace(/,/g, "");
+
+  if (!/^[+-]?(?:\d+\.?\d*|\.\d+)$/.test(trimmed)) {
+    return null;
+  }
+
+  const amount = Number(trimmed);
+  return Number.isFinite(amount) ? amount : null;
+}
+
 export function UnitConverterTool() {
   const [dimension, setDimension] = useState<UnitDimension>("length");
-  const [fromId, setFromId] = useState("km");
-  const [toId, setToId] = useState("m");
+  const [fromId, setFromId] = useState(preferredUnits.length[0]);
+  const [toId, setToId] = useState(preferredUnits.length[1]);
   const [value, setValue] = useState("1");
   const group = unitGroups[dimension];
-  const amount = value.trim() === "" ? null : Number(value);
+  const amount = readAmount(value);
   const conversion = useMemo(() => {
-    if (amount === null || Number.isNaN(amount)) {
+    if (amount === null) {
       return null;
     }
 
     return convertUnits(amount, dimension, fromId, toId);
   }, [amount, dimension, fromId, toId]);
-  const invalid = value.trim() !== "" && (amount === null || Number.isNaN(amount));
+  const invalid = value.trim() !== "" && amount === null && !/^[+-]?\.?$/.test(value.trim());
+
+  function updateValue(raw: string) {
+    const trimmed = raw.trim();
+
+    if (trimmed === "" || numericText.test(trimmed)) {
+      setValue(raw);
+      return;
+    }
+
+    setValue(extractNumericText(raw) ?? raw);
+  }
 
   const fromUnit = group.units.find((unit) => unit.id === fromId);
   const toUnit = group.units.find((unit) => unit.id === toId);
@@ -66,7 +100,7 @@ export function UnitConverterTool() {
             value={value}
             error={invalid ? "Enter a number such as 1, 2.5, or 100." : undefined}
             hint={invalid ? undefined : "The conversion updates as you type."}
-            onChange={(event) => setValue(event.target.value)}
+            onChange={(event) => updateValue(event.target.value)}
           />
         </div>
         <div className="mt-4 grid grid-cols-1 items-end gap-4 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
