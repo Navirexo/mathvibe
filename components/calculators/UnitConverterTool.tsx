@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { CopyResultBlock } from "@/components/ui/CopyResultButton";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { convertUnits, unitGroups, type UnitDimension } from "@/lib/units";
@@ -132,6 +133,10 @@ export function UnitConverterTool() {
           <p className="mt-2 text-sm text-muted">
             {conversion && toUnit ? toUnit.label : "Choose units to convert."}
           </p>
+          <CopyResultBlock
+            text={conversion && toUnit ? `${conversion.result} ${toUnit.label}` : null}
+            resetKey={`${dimension}:${fromId}:${toId}:${value}`}
+          />
         </Card>
         <Card>
           <h2 className="text-lg font-semibold text-ink">Factor</h2>

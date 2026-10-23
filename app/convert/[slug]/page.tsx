@@ -6,6 +6,7 @@ import { FaqAccordion } from "@/components/content/FaqAccordion";
 import { FractionWriteup } from "@/components/content/FractionWriteup";
 import { GuideSection } from "@/components/content/GuideSection";
 import { Card } from "@/components/ui/Card";
+import { CopyResultBlock } from "@/components/ui/CopyResultButton";
 import { pageMetadata } from "@/lib/seo";
 import { siteUrl } from "@/lib/site";
 import {
@@ -127,6 +128,7 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
             title="Result"
             value={resultValue(conversion)}
             detail={resultDetail(conversion)}
+            copyText={resultValue(conversion)}
           />
           <ResultCard
             title="Percentage"
@@ -225,11 +227,13 @@ function ResultCard({
   title,
   value,
   detail,
+  copyText,
   accent = "cyan",
 }: {
   title: string;
   value: string;
   detail?: string;
+  copyText?: string;
   accent?: "cyan" | "violet";
 }) {
   return (
@@ -245,6 +249,7 @@ function ResultCard({
         {value}
       </p>
       {detail ? <p className="mt-3 text-sm text-muted">{detail}</p> : null}
+      {copyText ? <CopyResultBlock text={copyText} /> : null}
     </Card>
   );
 }

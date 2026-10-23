@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { CopyResultBlock } from "@/components/ui/CopyResultButton";
 import { Input } from "@/components/ui/Input";
 import { analyzeAlgebra, type AlgebraMode } from "@/lib/algebra";
 import { useMemo, useState } from "react";
@@ -63,6 +64,10 @@ export function EquationSolver() {
           <p className="mt-3 break-words text-3xl font-semibold tracking-tight text-cyan sm:text-4xl">
             {evaluation.status === "ok" ? evaluation.summary : "—"}
           </p>
+          <CopyResultBlock
+            text={evaluation.status === "ok" ? evaluation.summary : null}
+            resetKey={`${mode}:${value}`}
+          />
         </Card>
         <Card>
           <h2 className="text-lg font-semibold text-ink">Step-by-step</h2>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/Card";
+import { CopyResultBlock } from "@/components/ui/CopyResultButton";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { evaluateFraction } from "@/lib/math";
@@ -63,6 +64,7 @@ function NotationGuide({ value }: { value: string }) {
       result={notation?.notation}
       steps={notation?.steps}
       empty={invalid ? "Enter a finite number." : "Enter a number to see the explanation."}
+      resetKey={value}
     />
   );
 }
@@ -88,6 +90,7 @@ function PowerGuide({ value }: { value: string }) {
       result={ready ? `10^${trimExponent(exponent)} = ${formatPower(exponent)}` : undefined}
       steps={steps}
       empty={value.trim() && !ready ? "Enter a finite exponent." : "Enter an exponent such as 2 or 3."}
+      resetKey={value}
     />
   );
 }
@@ -96,10 +99,12 @@ function ResultCard({
   result,
   steps,
   empty,
+  resetKey,
 }: {
   result?: string;
   steps?: { title: string; body: string }[];
   empty: string;
+  resetKey: string;
 }) {
   return (
     <>
@@ -108,6 +113,7 @@ function ResultCard({
         <p className="mt-3 break-words text-3xl font-semibold tracking-tight text-cyan sm:text-4xl">
           {result ?? "—"}
         </p>
+        <CopyResultBlock text={result ?? null} resetKey={resetKey} />
       </Card>
       <Card>
         <h2 className="text-lg font-semibold text-ink">Steps</h2>
@@ -144,6 +150,10 @@ function FractionGuide({ value }: { value: string }) {
         <p className="mt-3 text-3xl font-semibold tracking-tight text-cyan sm:text-4xl">
           {result ? `${result.decimal} = ${result.percent}` : "—"}
         </p>
+        <CopyResultBlock
+          text={result ? `${result.decimal} = ${result.percent}` : null}
+          resetKey={value}
+        />
       </Card>
       <Card>
         <h2 className="text-lg font-semibold text-ink">Steps</h2>

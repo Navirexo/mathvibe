@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { CopyResultButton, CopyResultNotice, useCopyResult } from "@/components/ui/CopyResultButton";
 import { Input } from "@/components/ui/Input";
 import {
   evaluateFraction,
@@ -13,26 +14,12 @@ import { useMemo, useState } from "react";
 
 export function FractionConverter() {
   const [value, setValue] = useState("");
-  const [notice, setNotice] = useState("");
   const evaluation = useMemo(() => evaluateFraction(value), [value]);
   const result = evaluation.status === "ok" ? roundDisplayedFraction(evaluation.result, 6, 2) : null;
-
-  async function copyResult() {
-    if (!result) {
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(formatFractionResult(result));
-      setNotice("Copied to clipboard.");
-    } catch {
-      setNotice("Clipboard permission was blocked.");
-    }
-  }
+  const copy = useCopyResult(result ? formatFractionResult(result) : null, value);
 
   function reset() {
     setValue("");
-    setNotice("");
   }
 
   return (
@@ -55,17 +42,10 @@ export function FractionConverter() {
           }
           onChange={(event) => {
             setValue(event.target.value);
-            setNotice("");
           }}
         />
         <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-          <Button
-            className="w-full sm:w-auto"
-            onClick={copyResult}
-            disabled={!result}
-          >
-            Copy result
-          </Button>
+          <CopyResultButton copy={copy} />
           <Button
             variant="secondary"
             className="w-full sm:w-auto"
@@ -75,9 +55,7 @@ export function FractionConverter() {
             Reset
           </Button>
         </div>
-        <p aria-live="polite" className="mt-3 min-h-5 text-sm text-cyan">
-          {notice}
-        </p>
+        <CopyResultNotice notice={copy.notice} />
       </Card>
 
       <div aria-live="polite" className="grid grid-cols-1 gap-4 md:grid-cols-2">

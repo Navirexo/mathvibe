@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { CopyResultButton, CopyResultNotice, useCopyResult } from "@/components/ui/CopyResultButton";
 import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/cn";
 import { evaluateExpression, type AngleMode } from "@/lib/scientific";
@@ -87,10 +88,13 @@ export function ScientificCalculator() {
   const [expression, setExpression] = useState("");
   const [mode, setMode] = useState<AngleMode>("deg");
   const [history, setHistory] = useState<HistoryEntry[]>([]);
-  const [notice, setNotice] = useState("");
   const evaluation = useMemo(
     () => evaluateExpression(expression, mode),
     [expression, mode],
+  );
+  const copy = useCopyResult(
+    evaluation.status === "ok" ? evaluation.result : null,
+    `${mode}:${expression}`,
   );
 
   function placeCursor(cursor: number) {
@@ -119,7 +123,6 @@ export function ScientificCalculator() {
   function replaceExpression(next: string, cursor: number) {
     expressionRef.current = next;
     setExpression(next);
-    setNotice("");
     placeCursor(cursor);
   }
 
@@ -185,19 +188,6 @@ export function ScientificCalculator() {
     }
   }
 
-  async function copyResult() {
-    if (evaluation.status !== "ok") {
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(`${expression} = ${evaluation.result}`);
-      setNotice("Copied to clipboard.");
-    } catch {
-      setNotice("Clipboard permission was blocked.");
-    }
-  }
-
   return (
     <div className="flex flex-col gap-4">
       <Card>
@@ -227,7 +217,6 @@ export function ScientificCalculator() {
             expressionRef.current = event.target.value;
             cursorRef.current = event.target.selectionStart ?? event.target.value.length;
             setExpression(event.target.value);
-            setNotice("");
           }}
           onSelect={(event) => {
             cursorRef.current = event.currentTarget.selectionStart ?? cursorRef.current;
@@ -271,9 +260,7 @@ export function ScientificCalculator() {
           ))}
         </div>
         <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-          <Button className="w-full sm:w-auto" onClick={copyResult} disabled={evaluation.status !== "ok"}>
-            Copy result
-          </Button>
+          <CopyResultButton copy={copy} />
           <Button
             variant="ghost"
             className="w-full sm:w-auto"
@@ -283,9 +270,7 @@ export function ScientificCalculator() {
             Reset
           </Button>
         </div>
-        <p aria-live="polite" className="mt-3 min-h-5 text-sm text-cyan">
-          {notice}
-        </p>
+        <CopyResultNotice notice={copy.notice} />
       </Card>
 
       <div aria-live="polite" className="grid grid-cols-1 gap-4 md:grid-cols-2">
