@@ -18,15 +18,18 @@ export function Footer() {
     <footer className="mt-auto border-t border-white/10 bg-midnight/80">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-8 sm:px-6">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex items-center gap-2.5">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 rounded-lg transition-opacity hover:opacity-90"
+          >
             <FooterLogo />
-            <div>
-              <p className="font-semibold text-ink">
+            <span>
+              <span className="block font-semibold text-ink">
                 Math<span className="text-cyan">Vibe</span>
-              </p>
-              <p className="mt-1 text-sm text-muted">mathvibe.net</p>
-            </div>
-          </div>
+              </span>
+              <span className="mt-1 block text-sm text-muted">mathvibe.net</span>
+            </span>
+          </Link>
           <nav aria-label="Footer">
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
               {siteLinks.map((link) => (

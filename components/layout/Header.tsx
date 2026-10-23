@@ -32,7 +32,7 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link
           href="/"
-          className="inline-flex min-h-11 items-center gap-2.5 rounded-lg"
+          className="inline-flex min-h-11 items-center gap-2.5 rounded-lg transition-opacity hover:opacity-90"
           onClick={() => setOpen(false)}
         >
           <LogoMark />
