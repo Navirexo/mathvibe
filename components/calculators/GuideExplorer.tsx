@@ -5,11 +5,12 @@ import { CopyResultBlock } from "@/components/ui/CopyResultButton";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { evaluateFraction, type FractionResult } from "@/lib/math";
+import { explainPowerOfTen, formatNotationReport, toScientificNotation } from "@/lib/notation";
 import {
   decimalApproximationNote,
+  formatFractionGuideReport,
   percentApproximationNote,
 } from "@/lib/rounding";
-import { toScientificNotation } from "@/lib/notation";
 import { useMemo, useState } from "react";
 
 type Topic = "notation" | "fraction" | "powers";
@@ -67,6 +68,7 @@ function NotationGuide({ value }: { value: string }) {
     <ResultCard
       result={notation?.notation}
       steps={notation?.steps}
+      report={notation ? formatNotationReport(value, notation) : null}
       empty={invalid ? "Enter a finite number." : "Enter a number to see the explanation."}
       resetKey={value}
     />
@@ -74,26 +76,14 @@ function NotationGuide({ value }: { value: string }) {
 }
 
 function PowerGuide({ value }: { value: string }) {
-  const exponent = value.trim() === "" ? null : Number(value);
-  const ready = exponent !== null && Number.isFinite(exponent);
-  const steps = ready
-    ? [
-        {
-          title: "Read the exponent",
-          body: `The exponent is ${trimExponent(exponent)}.`,
-        },
-        {
-          title: "Expand the power",
-          body: `10^${trimExponent(exponent)} = ${formatPower(exponent)}.`,
-        },
-      ]
-    : undefined;
+  const explanation = explainPowerOfTen(value);
 
   return (
     <ResultCard
-      result={ready ? `10^${trimExponent(exponent)} = ${formatPower(exponent)}` : undefined}
-      steps={steps}
-      empty={value.trim() && !ready ? "Enter a finite exponent." : "Enter an exponent such as 2 or 3."}
+      result={explanation?.result}
+      steps={explanation?.steps}
+      report={explanation?.report ?? null}
+      empty={value.trim() && !explanation ? "Enter a finite exponent." : "Enter an exponent such as 2 or 3."}
       resetKey={value}
     />
   );
@@ -102,11 +92,13 @@ function PowerGuide({ value }: { value: string }) {
 function ResultCard({
   result,
   steps,
+  report,
   empty,
   resetKey,
 }: {
   result?: string;
   steps?: { title: string; body: string }[];
+  report?: string | null;
   empty: string;
   resetKey: string;
 }) {
@@ -117,7 +109,7 @@ function ResultCard({
         <p className="mt-3 break-words text-3xl font-semibold tracking-tight text-cyan sm:text-4xl">
           {result ?? "—"}
         </p>
-        <CopyResultBlock text={result ?? null} resetKey={resetKey} />
+        <CopyResultBlock text={report ?? null} resetKey={resetKey} />
       </Card>
       <Card>
         <h2 className="text-lg font-semibold text-ink">Steps</h2>
@@ -130,7 +122,7 @@ function ResultCard({
                 </span>
                 <div>
                   <p className="font-medium text-ink">{step.title}</p>
-                  <p className="mt-1 text-base text-slate-200">{step.body}</p>
+                  <p className="mt-1 break-words text-base text-slate-200">{step.body}</p>
                 </div>
               </li>
             ))}
@@ -156,7 +148,7 @@ function FractionGuide({ value }: { value: string }) {
         </p>
         {result ? <ApproximationNotes result={result} /> : null}
         <CopyResultBlock
-          text={result ? fractionGuideCopy(result) : null}
+          text={result ? formatFractionGuideReport(result) : null}
           resetKey={value}
         />
       </Card>
@@ -171,7 +163,7 @@ function FractionGuide({ value }: { value: string }) {
                 </span>
                 <div>
                   <p className="font-medium text-ink">{step.title}</p>
-                  <p className="mt-1 text-base text-slate-200">{step.body}</p>
+                  <p className="mt-1 break-words text-base text-slate-200">{step.body}</p>
                 </div>
               </li>
             ))}
@@ -206,29 +198,4 @@ function ApproximationNotes({ result }: { result: FractionResult }) {
       ))}
     </div>
   );
-}
-
-function fractionGuideCopy(result: FractionResult) {
-  const exact = `${result.decimal} = ${result.percent}`;
-  const notes = [decimalApproximationNote(result), percentApproximationNote(result)].filter(
-    (note): note is string => note !== null,
-  );
-
-  return notes.length === 0 ? exact : `${exact}\n${notes.join("\n")}`;
-}
-
-function trimExponent(exponent: number) {
-  return String(exponent).replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
-}
-
-function formatPower(exponent: number) {
-  if (exponent >= 0 && exponent <= 12) {
-    return String(10 ** exponent);
-  }
-
-  if (exponent < 0 && exponent >= -6) {
-    return String(10 ** exponent);
-  }
-
-  return `1e${exponent}`;
 }

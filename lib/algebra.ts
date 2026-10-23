@@ -1,3 +1,4 @@
+import { formatDetailedReport } from "@/lib/report";
 import { formatNumber, solveLinear, solveQuadratic, type SolverStep } from "@/lib/solver";
 
 export type AlgebraMode = "solve" | "simplify";
@@ -74,6 +75,22 @@ export function analyzeAlgebra(input: string, mode: AlgebraMode): AlgebraEvaluat
       message: error instanceof Error ? error.message : "Enter a valid expression.",
     };
   }
+}
+
+export function formatAlgebraReport(
+  input: string,
+  mode: AlgebraMode,
+  evaluation: Extract<AlgebraEvaluation, { status: "ok" }>,
+) {
+  return formatDetailedReport({
+    title: "Equation Solver Result",
+    fields: [
+      { label: "Mode", value: mode === "solve" ? "Solve" : "Simplify" },
+      { label: mode === "solve" ? "Equation" : "Expression", value: input.trim() },
+      { label: "Result", value: evaluation.summary },
+    ],
+    steps: evaluation.steps,
+  });
 }
 
 function simplify(original: string, compact: string): AlgebraEvaluation {

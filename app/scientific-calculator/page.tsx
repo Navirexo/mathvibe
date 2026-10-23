@@ -16,7 +16,7 @@ const faqs = [
   {
     question: "Which functions can I type?",
     answer:
-      "Use sin, cos, tan, asin, acos, atan, sqrt, cbrt, log, ln, abs, and exp. pi and e are constants. ^ raises a number to a power, and 6.02e23 is scientific notation.",
+      "Use sin, cos, tan, asin, acos, atan, sqrt, cbrt, log, ln, abs, and exp. x², x!, ±, %, 1/x, eˣ, 10ˣ, and Ans are on the keypad. pi and e are constants. ^ raises a number to a power, % divides by 100, and 6.02e23 is scientific notation.",
   },
   {
     question: "How is the result checked?",

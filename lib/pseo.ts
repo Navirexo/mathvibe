@@ -1,4 +1,5 @@
 import { evaluateFraction, type FractionResult } from "@/lib/math";
+import { formatDetailedReport } from "@/lib/report";
 import {
   decimalApproximationNote,
   percentApproximationNote,
@@ -98,6 +99,33 @@ export function generateConversionMetadata(conversion: ParsedConversion) {
     description: `Convert ${fraction} to a decimal and a percentage instantly. View step-by-step math calculations, equivalent fractions, and worked examples on MathVibe.`,
     canonical: `/convert/${conversion.slug}`,
   };
+}
+
+export function formatConversionReport(conversion: ParsedConversion) {
+  const title =
+    conversion.kind === "percent"
+      ? "Fraction-to-Percent Conversion Result"
+      : conversion.kind === "decimal"
+        ? "Fraction-to-Decimal Conversion Result"
+        : "Fraction Conversion Result";
+  const decimalNote = decimalApproximationNote(conversion.result);
+  const percentNote = percentApproximationNote(conversion.result);
+
+  return formatDetailedReport({
+    title,
+    fields: [
+      { label: "Fraction", value: conversion.fraction },
+      { label: "Decimal", value: conversion.result.decimal },
+      { label: "Percent", value: conversion.result.percent },
+      { label: "Simplest form", value: conversion.result.simplified },
+      { label: "Equivalent fractions", value: conversion.result.equivalents.join(", ") },
+    ],
+    notes:
+      conversion.kind === "percent"
+        ? [percentNote, decimalNote]
+        : [decimalNote, percentNote],
+    steps: conversion.result.steps,
+  });
 }
 
 export function conversionHeadline(conversion: ParsedConversion) {

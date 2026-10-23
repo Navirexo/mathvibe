@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CopyResultBlock } from "@/components/ui/CopyResultButton";
 import { Input } from "@/components/ui/Input";
-import { analyzeAlgebra, type AlgebraMode } from "@/lib/algebra";
+import { analyzeAlgebra, formatAlgebraReport, type AlgebraMode } from "@/lib/algebra";
 import { useMemo, useState } from "react";
 
 const examples: Record<AlgebraMode, string[]> = {
@@ -65,7 +65,7 @@ export function EquationSolver() {
             {evaluation.status === "ok" ? evaluation.summary : "—"}
           </p>
           <CopyResultBlock
-            text={evaluation.status === "ok" ? evaluation.summary : null}
+            text={evaluation.status === "ok" ? formatAlgebraReport(value, mode, evaluation) : null}
             resetKey={`${mode}:${value}`}
           />
         </Card>
@@ -80,7 +80,7 @@ export function EquationSolver() {
                   </span>
                   <div>
                     <p className="font-medium text-ink">{step.title}</p>
-                    <p className="mt-1 text-base text-slate-200">{step.body}</p>
+                    <p className="mt-1 break-words text-base text-slate-200">{step.body}</p>
                   </div>
                 </li>
               ))}

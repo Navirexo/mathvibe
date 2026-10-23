@@ -1,4 +1,5 @@
-import { formatFractionResult, type FractionResult } from "@/lib/math";
+import { type FractionResult } from "@/lib/math";
+import { formatDetailedReport } from "@/lib/report";
 
 export const DISPLAY_DECIMAL_PLACES = 6;
 export const DISPLAY_PERCENT_PLACES = 2;
@@ -40,12 +41,27 @@ export function percentApproximationNote(result: FractionResult) {
 }
 
 export function formatFractionCopy(result: FractionResult) {
-  const notes = [decimalApproximationNote(result), percentApproximationNote(result)].filter(
-    (note): note is string => note !== null,
-  );
-  const exact = formatFractionResult(result);
+  return formatFractionReport(result, "Fraction-to-Percent Converter Result");
+}
 
-  return notes.length === 0 ? exact : `${exact}\n${notes.join("\n")}`;
+export function formatFractionGuideReport(result: FractionResult) {
+  return formatFractionReport(result, "Educational Guide Result", "Fraction to percent");
+}
+
+function formatFractionReport(result: FractionResult, title: string, topic?: string) {
+  return formatDetailedReport({
+    title,
+    fields: [
+      ...(topic ? [{ label: "Topic", value: topic }] : []),
+      { label: "Fraction", value: result.fraction },
+      { label: "Decimal", value: result.decimal },
+      { label: "Percent", value: result.percent },
+      { label: "Simplest form", value: result.simplified },
+      { label: "Equivalent fractions", value: result.equivalents.join(", ") },
+    ],
+    notes: [decimalApproximationNote(result), percentApproximationNote(result)],
+    steps: result.steps,
+  });
 }
 
 export function roundDisplayedFraction(

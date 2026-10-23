@@ -1,3 +1,5 @@
+import { formatDetailedReport } from "@/lib/report";
+
 export type UnitDimension = "length" | "mass" | "volume";
 
 export type UnitDefinition = {
@@ -100,6 +102,33 @@ export function convertUnits(
       },
     ],
   };
+}
+
+export function formatUnitReport(
+  value: number,
+  dimension: UnitDimension,
+  fromId: string,
+  toId: string,
+  conversion: UnitConversion,
+) {
+  const group = unitGroups[dimension];
+  const from = group.units.find((unit) => unit.id === fromId);
+  const to = group.units.find((unit) => unit.id === toId);
+
+  if (!from || !to) {
+    return null;
+  }
+
+  return formatDetailedReport({
+    title: "Unit Converter Result",
+    fields: [
+      { label: "Measurement", value: group.label },
+      { label: "Input", value: `${formatUnitValue(value)} ${from.label}` },
+      { label: "Result", value: `${conversion.result} ${to.label}` },
+      { label: "Factor", value: `1 ${from.id} = ${conversion.factor} ${to.id}` },
+    ],
+    steps: conversion.steps,
+  });
 }
 
 function unitName(label: string, amount: number) {

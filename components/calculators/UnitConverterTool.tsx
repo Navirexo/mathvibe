@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { CopyResultBlock } from "@/components/ui/CopyResultButton";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { convertUnits, unitGroups, type UnitDimension } from "@/lib/units";
+import { convertUnits, formatUnitReport, unitGroups, type UnitDimension } from "@/lib/units";
 import { useMemo, useState } from "react";
 
 const preferredUnits: Record<UnitDimension, [string, string]> = {
@@ -127,20 +127,24 @@ export function UnitConverterTool() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card>
           <h2 className="text-lg font-semibold text-ink">Result</h2>
-          <p className="mt-3 break-words text-4xl font-semibold tracking-tight text-cyan">
+          <p className="mt-3 break-words text-3xl font-semibold tracking-tight text-cyan sm:text-4xl">
             {conversion ? conversion.result : "—"}
           </p>
           <p className="mt-2 text-base text-slate-200">
             {conversion && toUnit ? toUnit.label : "Choose units to convert."}
           </p>
           <CopyResultBlock
-            text={conversion && toUnit ? `${conversion.result} ${toUnit.label}` : null}
+            text={
+              conversion && amount !== null
+                ? formatUnitReport(amount, dimension, fromId, toId, conversion)
+                : null
+            }
             resetKey={`${dimension}:${fromId}:${toId}:${value}`}
           />
         </Card>
         <Card>
           <h2 className="text-lg font-semibold text-ink">Factor</h2>
-          <p className="mt-3 break-words text-4xl font-semibold tracking-tight text-violet">
+          <p className="mt-3 break-words text-3xl font-semibold tracking-tight text-violet sm:text-4xl">
             {conversion ? conversion.factor : "—"}
           </p>
           <p className="mt-2 text-base text-slate-200">
@@ -161,7 +165,7 @@ export function UnitConverterTool() {
                 </span>
                 <div>
                   <p className="font-medium text-ink">{step.title}</p>
-                  <p className="mt-1 text-base text-slate-200">{step.body}</p>
+                  <p className="mt-1 break-words text-base text-slate-200">{step.body}</p>
                 </div>
               </li>
             ))}

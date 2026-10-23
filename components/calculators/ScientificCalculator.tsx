@@ -5,7 +5,18 @@ import { Card } from "@/components/ui/Card";
 import { CopyResultButton, CopyResultNotice, useCopyResult } from "@/components/ui/CopyResultButton";
 import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/cn";
-import { evaluateExpression, type AngleMode } from "@/lib/scientific";
+import { copyDetailedResultLabel } from "@/lib/report";
+import {
+  appendHistory,
+  clearEntry,
+  evaluateExpression,
+  formatHistoryEntry,
+  formatScientificReport,
+  insertReciprocal,
+  insertSquare,
+  toggleSign,
+  type AngleMode,
+} from "@/lib/scientific";
 import { useMemo, useRef, useState } from "react";
 
 type HistoryEntry = {
@@ -14,6 +25,7 @@ type HistoryEntry = {
   result: string;
   scientific: string;
   mode: AngleMode;
+  showMode: boolean;
 };
 
 type KeyTone = "digit" | "operator" | "function" | "equals";
@@ -22,7 +34,7 @@ type KeyDef = {
   label: string;
   aria: string;
   insert?: string;
-  action?: "delete" | "clear" | "equals";
+  action?: "delete" | "clear" | "clear-entry" | "equals" | "square" | "reciprocal" | "sign";
   tone: KeyTone;
   span?: number;
 };
@@ -48,6 +60,20 @@ const keyRows: KeyDef[][] = [
     { label: "xʸ", aria: "power", insert: "^", tone: "operator" },
     { label: "π", aria: "pi", insert: "pi", tone: "function" },
     { label: "e", aria: "Euler's number", insert: "e", tone: "function" },
+  ],
+  [
+    { label: "x²", aria: "square", action: "square", tone: "function" },
+    { label: "x!", aria: "factorial", insert: "!", tone: "function" },
+    { label: "±", aria: "sign toggle", action: "sign", tone: "operator" },
+    { label: "%", aria: "percent", insert: "%", tone: "function" },
+    { label: "1/x", aria: "reciprocal", action: "reciprocal", tone: "function" },
+  ],
+  [
+    { label: "eˣ", aria: "exponential", insert: "exp(", tone: "function" },
+    { label: "10ˣ", aria: "power of ten", insert: "10^", tone: "function" },
+    { label: "Ans", aria: "previous answer", insert: "Ans", tone: "function" },
+    { label: "abs", aria: "absolute value", insert: "abs(", tone: "function" },
+    { label: "C", aria: "clear entry", action: "clear-entry", tone: "operator" },
   ],
   [
     { label: "7", aria: "7", insert: "7", tone: "digit" },
@@ -80,7 +106,25 @@ const keyRows: KeyDef[][] = [
 
 const examples = ["2+3*4", "sin(30)", "sqrt(2)", "2^10", "6.02e23"];
 
-const compactKeyLabels = new Set(["sin", "cos", "tan", "sin⁻¹", "cos⁻¹", "tan⁻¹", "log", "ln", "AC", "EE"]);
+const compactKeyLabels = new Set([
+  "sin",
+  "cos",
+  "tan",
+  "sin⁻¹",
+  "cos⁻¹",
+  "tan⁻¹",
+  "log",
+  "ln",
+  "AC",
+  "EE",
+  "x²",
+  "x!",
+  "1/x",
+  "eˣ",
+  "10ˣ",
+  "Ans",
+  "abs",
+]);
 
 function keyLabelClass(label: string) {
   if (compactKeyLabels.has(label)) {
@@ -107,16 +151,19 @@ export function ScientificCalculator() {
   const expressionRef = useRef("");
   const cursorRef = useRef(0);
   const nextHistoryId = useRef(1);
+  const pendingAns = useRef<number | null>(null);
   const [expression, setExpression] = useState("");
   const [mode, setMode] = useState<AngleMode>("deg");
+  const [savedAns, setSavedAns] = useState<number | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const evaluation = useMemo(
-    () => evaluateExpression(expression, mode),
-    [expression, mode],
+    () => evaluateExpression(expression, mode, savedAns),
+    [expression, mode, savedAns],
   );
   const copy = useCopyResult(
-    evaluation.status === "ok" ? evaluation.result : null,
-    `${mode}:${expression}`,
+    evaluation.status === "ok" ? formatScientificReport(expression, mode, evaluation, savedAns) : null,
+    `${mode}:${expression}:${savedAns ?? ""}`,
+    copyDetailedResultLabel,
   );
 
   function placeCursor(cursor: number) {
@@ -143,6 +190,14 @@ export function ScientificCalculator() {
   }
 
   function replaceExpression(next: string, cursor: number) {
+    if (
+      pendingAns.current !== null &&
+      next !== expressionRef.current &&
+      /\bans\b/i.test(expressionRef.current)
+    ) {
+      setSavedAns(pendingAns.current);
+    }
+
     expressionRef.current = next;
     setExpression(next);
     placeCursor(cursor);
@@ -172,10 +227,16 @@ export function ScientificCalculator() {
 
   function remember() {
     const current = expressionRef.current;
-    const latest = evaluateExpression(current, mode);
+    const latest = evaluateExpression(current, mode, savedAns);
 
     if (latest.status !== "ok") {
       return;
+    }
+
+    pendingAns.current = latest.value;
+
+    if (!/\bans\b/i.test(current)) {
+      setSavedAns(latest.value);
     }
 
     const entry: HistoryEntry = {
@@ -184,14 +245,22 @@ export function ScientificCalculator() {
       result: latest.result,
       scientific: latest.scientific,
       mode,
+      showMode: latest.usesAngle,
     };
     nextHistoryId.current += 1;
-    setHistory((current) => [entry, ...current].slice(0, 8));
+    setHistory((entries) => appendHistory(entries, entry));
   }
 
   function press(key: KeyDef) {
     if (key.action === "clear") {
       replaceExpression("", 0);
+      return;
+    }
+
+    if (key.action === "clear-entry") {
+      const { start, end } = selection();
+      const next = clearEntry(expressionRef.current, start, end);
+      replaceExpression(next.expression, next.cursor);
       return;
     }
 
@@ -202,6 +271,21 @@ export function ScientificCalculator() {
 
     if (key.action === "equals") {
       remember();
+      return;
+    }
+
+    if (key.action === "sign") {
+      const { start } = selection();
+      const toggled = toggleSign(expressionRef.current, start);
+      replaceExpression(toggled.expression, toggled.cursor);
+      return;
+    }
+
+    if (key.action === "square" || key.action === "reciprocal") {
+      const { start, end } = selection();
+      const transform = key.action === "square" ? insertSquare : insertReciprocal;
+      const next = transform(expressionRef.current, start, end);
+      replaceExpression(next.expression, next.cursor);
       return;
     }
 
@@ -237,9 +321,19 @@ export function ScientificCalculator() {
               : "Type or use the keypad. EE writes scientific notation, as in 6.02e23. Results update as you type."
           }
           onChange={(event) => {
-            expressionRef.current = event.target.value;
-            cursorRef.current = event.target.selectionStart ?? event.target.value.length;
-            setExpression(event.target.value);
+            const next = event.target.value;
+
+            if (
+              pendingAns.current !== null &&
+              next !== expressionRef.current &&
+              /\bans\b/i.test(expressionRef.current)
+            ) {
+              setSavedAns(pendingAns.current);
+            }
+
+            expressionRef.current = next;
+            cursorRef.current = event.target.selectionStart ?? next.length;
+            setExpression(next);
           }}
           onSelect={(event) => {
             cursorRef.current = event.currentTarget.selectionStart ?? cursorRef.current;
@@ -251,24 +345,28 @@ export function ScientificCalculator() {
             }
           }}
         />
-        <div className="mt-4 grid grid-cols-5 gap-2" aria-label="Calculator keypad">
-          {keyRows.flat().map((key) => (
-            <Button
-              key={`${key.label}-${key.aria}`}
-              variant={key.tone === "equals" ? "primary" : key.tone === "operator" ? "secondary" : "ghost"}
-              aria-label={key.aria}
-              className={cn(
-                "w-full overflow-hidden !px-1 whitespace-nowrap !leading-none !tracking-normal min-[375px]:!px-2",
-                keyLabelClass(key.label),
-                key.tone !== "equals" &&
-                  "border !border-cyan-500/35 !bg-midnight !text-ink !shadow-none hover:!border-violet/80 hover:!bg-[#111C2D]",
-                key.span === 2 && "col-span-2",
-              )}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => press(key)}
-            >
-              {key.label}
-            </Button>
+        <div className="mt-4 grid gap-2" aria-label="Calculator keypad">
+          {keyRows.map((row) => (
+            <div key={row.map((key) => key.aria).join("-")} className="grid grid-cols-5 gap-2">
+              {row.map((key) => (
+                <Button
+                  key={`${key.label}-${key.aria}`}
+                  variant={key.tone === "equals" ? "primary" : key.tone === "operator" ? "secondary" : "ghost"}
+                  aria-label={key.aria}
+                  className={cn(
+                    "w-full overflow-hidden !px-1 whitespace-nowrap !leading-none !tracking-normal min-[375px]:!px-2",
+                    keyLabelClass(key.label),
+                    key.tone !== "equals" &&
+                      "border !border-cyan-500/35 !bg-midnight !text-ink !shadow-none hover:!border-violet/80 hover:!bg-[#111C2D]",
+                    key.span === 2 && "col-span-2",
+                  )}
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => press(key)}
+                >
+                  {key.label}
+                </Button>
+              ))}
+            </div>
           ))}
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
@@ -300,13 +398,13 @@ export function ScientificCalculator() {
       <div aria-live="polite" className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Card>
           <h2 className="text-lg font-semibold text-ink">Result</h2>
-          <p className="mt-3 break-words text-4xl font-semibold tracking-tight text-cyan">
+          <p className="mt-3 break-words text-3xl font-semibold tracking-tight text-cyan sm:text-4xl">
             {evaluation.status === "ok" ? evaluation.result : "—"}
           </p>
         </Card>
         <Card>
           <h2 className="text-lg font-semibold text-ink">Scientific notation</h2>
-          <p className="mt-3 break-words text-4xl font-semibold tracking-tight text-violet">
+          <p className="mt-3 break-words text-3xl font-semibold tracking-tight text-violet sm:text-4xl">
             {evaluation.status === "ok" ? evaluation.scientific : "—"}
           </p>
         </Card>
@@ -315,7 +413,7 @@ export function ScientificCalculator() {
           {evaluation.status === "ok" ? (
             <StepList steps={evaluation.steps} />
           ) : (
-            <p className="mt-2 text-sm text-muted">
+            <p className="mt-2 text-base text-slate-200">
               {evaluation.status === "incomplete"
                 ? "Finish the expression to see the steps."
                 : "The evaluation steps appear here."}
@@ -326,28 +424,36 @@ export function ScientificCalculator() {
           <h2 className="text-lg font-semibold text-ink">History</h2>
           {history.length > 0 ? (
             <ul className="mt-4 flex flex-col gap-2">
-              {history.map((entry) => (
-                <li key={entry.id}>
-                  <button
-                    type="button"
-                    className="flex w-full flex-col gap-1 rounded-xl border border-white/10 bg-midnight px-3 py-2 text-left hover:border-cyan-400/50 sm:flex-row sm:items-center sm:justify-between"
-                    onClick={() => {
-                      replaceExpression(entry.expression, entry.expression.length);
-                      setMode(entry.mode);
-                    }}
-                  >
-                    <span className="break-all text-sm text-ink">
-                      {entry.expression} = {entry.result}
-                    </span>
-                    <span className="text-xs text-muted">
-                      {entry.scientific} · {entry.mode === "deg" ? "degrees" : "radians"}
-                    </span>
-                  </button>
-                </li>
-              ))}
+              {history.map((entry) => {
+                const line = formatHistoryEntry(
+                  entry.expression,
+                  entry.result,
+                  entry.scientific,
+                  entry.showMode ? entry.mode : null,
+                );
+
+                return (
+                  <li key={entry.id}>
+                    <button
+                      type="button"
+                      className="flex min-h-11 w-full min-w-0 flex-col gap-1 rounded-xl border border-white/10 bg-midnight px-3 py-2 text-left hover:border-cyan-400/50"
+                      onClick={() => {
+                        replaceExpression(entry.expression, entry.expression.length);
+                        setMode(entry.mode);
+                      }}
+                    >
+                      <span className="break-words text-base text-ink">{line.primary}</span>
+                      <span className="break-words text-sm text-slate-200">{line.detail}</span>
+                      {line.modeLabel ? (
+                        <span className="text-sm text-slate-200">{line.modeLabel}</span>
+                      ) : null}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           ) : (
-            <p className="mt-2 text-sm text-muted">
+            <p className="mt-2 text-base text-slate-200">
               Press equals to keep a result here. Select a saved line to load it again.
             </p>
           )}
@@ -367,7 +473,7 @@ function StepList({ steps }: { steps: { title: string; body: string }[] }) {
           </span>
           <div>
             <p className="font-medium text-ink">{step.title}</p>
-            <p className="mt-1 text-sm text-muted">{step.body}</p>
+            <p className="mt-1 break-words text-base text-slate-200">{step.body}</p>
           </div>
         </li>
       ))}

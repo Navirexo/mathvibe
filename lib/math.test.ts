@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { evaluateFraction, formatFractionResult } from "@/lib/math";
-import { conversionFaqs, parseConversionSlug } from "@/lib/pseo";
+import { conversionFaqs, formatConversionReport, parseConversionSlug } from "@/lib/pseo";
 import {
   decimalApproximationNote,
   formatFractionCopy,
+  formatFractionGuideReport,
   percentApproximationNote,
   roundDisplayedFraction,
 } from "@/lib/rounding";
@@ -94,8 +95,33 @@ describe("fraction converter", () => {
     expect(percentApproximationNote(sixth)).toBe("Rounded to 2 percent places: 16.67%.");
 
     expect(decimalApproximationNote(fraction("0/5"))).toBeNull();
-    expect(formatFractionCopy(exact)).toContain(formatFractionResult(exact));
-    expect(formatFractionCopy(exact)).toContain("0.833333");
-    expect(formatFractionCopy(fraction("3/4"))).toBe(formatFractionResult(fraction("3/4")));
+    const repeatingCopy = formatFractionCopy(exact);
+    expect(repeatingCopy).toContain("Fraction-to-Percent Converter Result");
+    expect(repeatingCopy).toContain("Fraction: 5/6\nDecimal: 0.8(3)\nPercent: 83.(3)%");
+    expect(repeatingCopy).toContain("Rounded to 6 decimal places: 0.833333.");
+    expect(repeatingCopy).toContain("Read the fraction. 5/6 means 5 divided by 6.");
+    expect(repeatingCopy).not.toContain("0.8(3)83");
+    expect(repeatingCopy).not.toContain("Angle mode");
+    const exactCopy = formatFractionCopy(fraction("3/4"));
+    expect(exactCopy).toContain("Decimal: 0.75\nPercent: 75%");
+    expect(exactCopy).not.toContain("Rounded to");
+    expect(formatFractionResult(fraction("3/4"))).toContain("Fraction: 3/4");
+    const guideCopy = formatFractionGuideReport(exact);
+    expect(guideCopy).toContain("Educational Guide Result");
+    expect(guideCopy).toContain("Topic: Fraction to percent");
+    expect(guideCopy).not.toContain("x = 4");
+
+    const percentPage = parseConversionSlug("5-6-as-a-percent");
+    const percentReport = formatConversionReport(percentPage!);
+    expect(percentReport.startsWith("Fraction-to-Percent Conversion Result")).toBe(true);
+    expect(percentReport).toContain("Percent: 83.(3)%\nSimplest form: 5/6");
+    expect(percentReport).toContain("Rounded to 2 percent places: 83.33%.");
+    expect(percentReport).not.toContain("Angle mode");
+    const decimalPage = parseConversionSlug("3-4-as-a-decimal");
+    const decimalReport = formatConversionReport(decimalPage!);
+    expect(decimalReport.startsWith("Fraction-to-Decimal Conversion Result")).toBe(true);
+    expect(decimalReport).toContain("Decimal: 0.75\nPercent: 75%");
+    expect(decimalReport).not.toContain("Rounded to");
+    expect(decimalReport).not.toContain("83.(3)%");
   });
 });

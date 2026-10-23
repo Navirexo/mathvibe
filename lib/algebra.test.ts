@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { analyzeAlgebra } from "@/lib/algebra";
+import { analyzeAlgebra, formatAlgebraReport } from "@/lib/algebra";
 
 function solved(input: string) {
   const evaluation = analyzeAlgebra(input, "solve");
@@ -44,9 +44,22 @@ describe("equation solver", () => {
     const evaluation = solved("2x + 3 = 11");
     expect(evaluation.summary).toBe("x = 4");
     expect(evaluation.steps.at(-1)?.body).toContain("= 4");
-    expect(analyzeAlgebra("2x + 3x - x", "simplify")).toMatchObject({
+    const simplified = analyzeAlgebra("2x + 3x - x", "simplify");
+    expect(simplified).toMatchObject({
       status: "ok",
       summary: "4x",
     });
+    const solveReport = formatAlgebraReport("2x + 3 = 11", "solve", evaluation);
+    expect(solveReport).toContain("Equation Solver Result");
+    expect(solveReport).toContain("Mode: Solve\nEquation: 2x + 3 = 11\nResult: x = 4");
+    expect(solveReport).toContain("Step-by-step:");
+    expect(solveReport).not.toContain("Angle mode");
+    expect(solveReport).not.toContain("Scientific notation");
+    if (simplified.status === "ok") {
+      const simplifyReport = formatAlgebraReport("2x + 3x - x", "simplify", simplified);
+      expect(simplifyReport).toContain("Mode: Simplify\nExpression: 2x + 3x - x\nResult: 4x");
+      expect(simplifyReport).not.toContain("Equation: 2x + 3 = 11");
+      expect(simplifyReport).not.toContain("Result: x = 4");
+    }
   });
 });
