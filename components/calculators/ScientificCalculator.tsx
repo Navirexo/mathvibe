@@ -80,6 +80,28 @@ const keyRows: KeyDef[][] = [
 
 const examples = ["2+3*4", "sin(30)", "sqrt(2)", "2^10", "6.02e23"];
 
+const compactKeyLabels = new Set(["sin", "cos", "tan", "sin⁻¹", "cos⁻¹", "tan⁻¹", "log", "ln", "AC", "EE"]);
+
+function keyLabelClass(label: string) {
+  if (compactKeyLabels.has(label)) {
+    return "!text-sm !font-semibold min-[390px]:!text-base sm:!text-lg";
+  }
+
+  return "!text-2xl !font-bold";
+}
+
+function expressionTextClass(value: string) {
+  if (value.length > 28) {
+    return "!text-lg sm:!text-xl";
+  }
+
+  if (value.length > 16) {
+    return "!text-xl sm:!text-2xl";
+  }
+
+  return "!text-2xl sm:!text-3xl";
+}
+
 export function ScientificCalculator() {
   const inputRef = useRef<HTMLInputElement>(null);
   const expressionRef = useRef("");
@@ -207,6 +229,7 @@ export function ScientificCalculator() {
           spellCheck={false}
           placeholder="sin(30) + 2^3"
           value={expression}
+          className={cn("!font-semibold !tracking-tight", expressionTextClass(expression))}
           error={evaluation.status === "invalid" ? evaluation.message : undefined}
           hint={
             evaluation.status === "invalid"
@@ -235,7 +258,8 @@ export function ScientificCalculator() {
               variant={key.tone === "equals" ? "primary" : key.tone === "operator" ? "secondary" : "ghost"}
               aria-label={key.aria}
               className={cn(
-                "w-full px-2 text-xs sm:text-sm",
+                "w-full overflow-hidden !px-1 whitespace-nowrap !leading-none !tracking-normal min-[375px]:!px-2",
+                keyLabelClass(key.label),
                 key.tone !== "equals" &&
                   "border !border-cyan-500/35 !bg-midnight !text-ink !shadow-none hover:!border-violet/80 hover:!bg-[#111C2D]",
                 key.span === 2 && "col-span-2",
