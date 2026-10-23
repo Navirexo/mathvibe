@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { evaluateFraction } from "@/lib/math";
-import { parseConversionSlug } from "@/lib/pseo";
-import { roundDisplayedFraction } from "@/lib/rounding";
+import { evaluateFraction, formatFractionResult } from "@/lib/math";
+import { conversionFaqs, parseConversionSlug } from "@/lib/pseo";
+import {
+  decimalApproximationNote,
+  formatFractionCopy,
+  percentApproximationNote,
+  roundDisplayedFraction,
+} from "@/lib/rounding";
 
 function fraction(input: string) {
   const evaluation = evaluateFraction(input);
@@ -45,16 +50,52 @@ describe("fraction converter", () => {
     expect(steps).toContain("0.714286");
     expect(steps).toContain("71.43%");
     expect(steps).not.toMatch(/\d\.\d*\(/);
+  });
 
-    const page = parseConversionSlug("3-4-as-a-decimal");
-    expect(page?.kind).toBe("decimal");
-    expect(page?.result.decimal).toBe("0.75");
-    expect(page?.result.percent).toBe("75%");
-    expect(page?.slug).toBe("3-4-as-a-decimal");
+  it("shows the same exact fraction on conversion pages and labels one rounding", () => {
+    const exact = fraction("5/6");
+    expect(exact.decimal).toBe("0.8(3)");
+    expect(exact.percent).toBe("83.(3)%");
+    expect(decimalApproximationNote(exact)).toBe("Rounded to 6 decimal places: 0.833333.");
+    expect(percentApproximationNote(exact)).toBe("Rounded to 2 percent places: 83.33%.");
+    const exactSteps = exact.steps.map((step) => step.body).join(" ");
+    expect(exactSteps).toContain("5 ÷ 6 = 0.8(3)");
+    expect(exactSteps).toContain("83.(3)%");
+    expect(exactSteps).not.toContain("0.8333");
 
-    const repeating = parseConversionSlug("5-6-as-a-percent");
-    expect(repeating?.result.decimal).toBe("0.8333");
-    expect(repeating?.result.percent).toBe("83.33%");
-    expect(repeating?.result.steps.map((step) => step.body).join(" ")).not.toMatch(/\d\.\d*\(/);
+    const page = parseConversionSlug("5-6-as-a-decimal");
+    expect(page?.result.decimal).toBe(exact.decimal);
+    expect(page?.result.percent).toBe(exact.percent);
+    const faqs = page ? conversionFaqs(page) : [];
+    expect(faqs[0]?.answer).toContain("83.(3)%");
+    expect(faqs[0]?.answer).toContain("Rounded to 2 percent places: 83.33%.");
+    expect(faqs[1]?.answer).toContain("0.8(3)");
+    expect(faqs[1]?.answer).toContain("Rounded to 6 decimal places: 0.833333.");
+
+    const terminating = parseConversionSlug("3-4-as-a-decimal");
+    expect(terminating?.result).toMatchObject({ decimal: "0.75", percent: "75%" });
+    expect(decimalApproximationNote(fraction("3/4"))).toBeNull();
+    expect(percentApproximationNote(fraction("3/4"))).toBeNull();
+    expect(conversionFaqs(terminating!).map((faq) => faq.answer).join(" ")).not.toContain("Rounded to");
+
+    const negative = fraction("-5/6");
+    expect(negative.decimal).toBe("-0.8(3)");
+    expect(decimalApproximationNote(negative)).toBe("Rounded to 6 decimal places: -0.833333.");
+    expect(percentApproximationNote(negative)).toBe("Rounded to 2 percent places: -83.33%.");
+
+    const twoThirds = fraction("2/3");
+    expect(twoThirds.decimal).toBe("0.(6)");
+    expect(decimalApproximationNote(twoThirds)).toBe("Rounded to 6 decimal places: 0.666667.");
+
+    const sixth = fraction("1/6");
+    expect(sixth.decimal).toBe("0.1(6)");
+    expect(sixth.percent).toBe("16.(6)%");
+    expect(decimalApproximationNote(sixth)).toBe("Rounded to 6 decimal places: 0.166667.");
+    expect(percentApproximationNote(sixth)).toBe("Rounded to 2 percent places: 16.67%.");
+
+    expect(decimalApproximationNote(fraction("0/5"))).toBeNull();
+    expect(formatFractionCopy(exact)).toContain(formatFractionResult(exact));
+    expect(formatFractionCopy(exact)).toContain("0.833333");
+    expect(formatFractionCopy(fraction("3/4"))).toBe(formatFractionResult(fraction("3/4")));
   });
 });

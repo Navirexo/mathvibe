@@ -10,6 +10,10 @@ import { CopyResultBlock } from "@/components/ui/CopyResultButton";
 import { pageMetadata } from "@/lib/seo";
 import { siteUrl } from "@/lib/site";
 import {
+  decimalApproximationNote,
+  percentApproximationNote,
+} from "@/lib/rounding";
+import {
   conversionFaqs,
   conversionHeadline,
   generateConversionMetadata,
@@ -128,14 +132,19 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
             title="Result"
             value={resultValue(conversion)}
             detail={resultDetail(conversion)}
-            copyText={resultValue(conversion)}
+            copyText={resultCopy(conversion)}
           />
           <ResultCard
             title="Percentage"
             value={conversion.result.percent}
+            detail={percentApproximationNote(conversion.result) ?? undefined}
             accent="violet"
           />
-          <ResultCard title="Decimal" value={conversion.result.decimal} />
+          <ResultCard
+            title="Decimal"
+            value={conversion.result.decimal}
+            detail={decimalApproximationNote(conversion.result) ?? undefined}
+          />
         </section>
 
         <AdSlot placement="rectangle" />
@@ -157,7 +166,7 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
           </ol>
         </Card>
 
-        <FractionWriteup examples={examples} rounded />
+        <FractionWriteup examples={examples} />
 
         <section aria-labelledby="faq-heading">
           <h2 id="faq-heading" className="text-xl font-semibold text-ink">
@@ -184,7 +193,7 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
         </section>
       </article>
 
-      <GuideSection roundedAccuracy />
+      <GuideSection />
 
       <script
         type="application/ld+json"
@@ -270,12 +279,41 @@ function resultDetail(conversion: ParsedConversion) {
   const { fraction, result } = conversion;
 
   if (conversion.kind === "percent") {
-    return `${fraction} as a percent is ${result.percent}. Simplest form: ${result.simplified}.`;
+    return withNote(
+      `${fraction} as a percent is ${result.percent}. Simplest form: ${result.simplified}.`,
+      percentApproximationNote(result),
+    );
   }
 
   if (conversion.kind === "decimal") {
-    return `${fraction} as a decimal is ${result.decimal}. Simplest form: ${result.simplified}.`;
+    return withNote(
+      `${fraction} as a decimal is ${result.decimal}. Simplest form: ${result.simplified}.`,
+      decimalApproximationNote(result),
+    );
   }
 
-  return `${fraction} equals ${result.decimal} and ${result.percent}. Simplest form: ${result.simplified}.`;
+  return withNote(
+    `${fraction} equals ${result.decimal} and ${result.percent}. Simplest form: ${result.simplified}.`,
+    [decimalApproximationNote(result), percentApproximationNote(result)]
+      .filter((note): note is string => note !== null)
+      .join(" ") || null,
+  );
+}
+
+function resultCopy(conversion: ParsedConversion) {
+  const value = resultValue(conversion);
+  const note =
+    conversion.kind === "percent"
+      ? percentApproximationNote(conversion.result)
+      : conversion.kind === "decimal"
+        ? decimalApproximationNote(conversion.result)
+        : [decimalApproximationNote(conversion.result), percentApproximationNote(conversion.result)]
+            .filter((item): item is string => item !== null)
+            .join(" ") || null;
+
+  return note ? `${value}\n${note}` : value;
+}
+
+function withNote(sentence: string, note: string | null) {
+  return note ? `${sentence} ${note}` : sentence;
 }

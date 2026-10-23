@@ -4,7 +4,11 @@ import { Card } from "@/components/ui/Card";
 import { CopyResultBlock } from "@/components/ui/CopyResultButton";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { evaluateFraction } from "@/lib/math";
+import { evaluateFraction, type FractionResult } from "@/lib/math";
+import {
+  decimalApproximationNote,
+  percentApproximationNote,
+} from "@/lib/rounding";
 import { toScientificNotation } from "@/lib/notation";
 import { useMemo, useState } from "react";
 
@@ -147,11 +151,12 @@ function FractionGuide({ value }: { value: string }) {
     <>
       <Card>
         <h2 className="text-lg font-semibold text-ink">Result</h2>
-        <p className="mt-3 text-3xl font-semibold tracking-tight text-cyan sm:text-4xl">
+        <p className="mt-3 break-words text-3xl font-semibold tracking-tight text-cyan sm:text-4xl">
           {result ? `${result.decimal} = ${result.percent}` : "—"}
         </p>
+        {result ? <ApproximationNotes result={result} /> : null}
         <CopyResultBlock
-          text={result ? `${result.decimal} = ${result.percent}` : null}
+          text={result ? fractionGuideCopy(result) : null}
           resetKey={value}
         />
       </Card>
@@ -181,6 +186,35 @@ function FractionGuide({ value }: { value: string }) {
       </Card>
     </>
   );
+}
+
+function ApproximationNotes({ result }: { result: FractionResult }) {
+  const notes = [decimalApproximationNote(result), percentApproximationNote(result)].filter(
+    (note): note is string => note !== null,
+  );
+
+  if (notes.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-3 space-y-1">
+      {notes.map((note) => (
+        <p key={note} className="text-base text-slate-200">
+          {note}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function fractionGuideCopy(result: FractionResult) {
+  const exact = `${result.decimal} = ${result.percent}`;
+  const notes = [decimalApproximationNote(result), percentApproximationNote(result)].filter(
+    (note): note is string => note !== null,
+  );
+
+  return notes.length === 0 ? exact : `${exact}\n${notes.join("\n")}`;
 }
 
 function trimExponent(exponent: number) {

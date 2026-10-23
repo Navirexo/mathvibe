@@ -16,7 +16,7 @@ export const metadata: Metadata = pageMetadata({
 export default function Home() {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-14 px-4 py-12 sm:gap-16 sm:px-6 sm:py-16">
-      <section className="relative">
+      <section className="relative overflow-x-clip">
         <AmbientGlow className="-inset-x-6 -top-10 h-72" />
         <div className="relative">
           <p className="inline-flex items-center gap-2 rounded-full border border-cyan-400/40 bg-[#111C2D]/70 px-3 py-1 text-xs font-semibold tracking-[0.18em] text-[#00D1F7] uppercase shadow-[0_0_18px_rgba(0,209,247,0.35)]">

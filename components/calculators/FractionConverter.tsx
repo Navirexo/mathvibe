@@ -6,17 +6,20 @@ import { CopyResultButton, CopyResultNotice, useCopyResult } from "@/components/
 import { Input } from "@/components/ui/Input";
 import {
   evaluateFraction,
-  formatFractionResult,
   type FractionResult,
 } from "@/lib/math";
-import { roundDisplayedFraction } from "@/lib/rounding";
+import {
+  decimalApproximationNote,
+  formatFractionCopy,
+  percentApproximationNote,
+} from "@/lib/rounding";
 import { useMemo, useState } from "react";
 
 export function FractionConverter() {
   const [value, setValue] = useState("");
   const evaluation = useMemo(() => evaluateFraction(value), [value]);
-  const result = evaluation.status === "ok" ? roundDisplayedFraction(evaluation.result, 6, 2) : null;
-  const copy = useCopyResult(result ? formatFractionResult(result) : null, value);
+  const result = evaluation.status === "ok" ? evaluation.result : null;
+  const copy = useCopyResult(result ? formatFractionCopy(result) : null, value);
 
   function reset() {
     setValue("");
@@ -59,8 +62,17 @@ export function FractionConverter() {
       </Card>
 
       <div aria-live="polite" className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <OutputCard title="Decimal" value={result?.decimal} />
-        <OutputCard title="Percent" value={result?.percent} accent="violet" />
+        <OutputCard
+          title="Decimal"
+          value={result?.decimal}
+          detail={result ? decimalApproximationNote(result) ?? undefined : undefined}
+        />
+        <OutputCard
+          title="Percent"
+          value={result?.percent}
+          detail={result ? percentApproximationNote(result) ?? undefined : undefined}
+          accent="violet"
+        />
         <Card className="md:col-span-2">
           <h2 className="text-lg font-semibold text-ink">Equivalent fractions</h2>
           {result ? (
@@ -98,10 +110,12 @@ export function FractionConverter() {
 function OutputCard({
   title,
   value,
+  detail,
   accent = "cyan",
 }: {
   title: string;
   value?: string;
+  detail?: string;
   accent?: "cyan" | "violet";
 }) {
   return (
@@ -116,6 +130,7 @@ function OutputCard({
       >
         {value ?? "—"}
       </p>
+      {detail ? <p className="mt-3 text-base text-slate-200">{detail}</p> : null}
     </Card>
   );
 }

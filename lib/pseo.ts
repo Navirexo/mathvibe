@@ -1,5 +1,8 @@
 import { evaluateFraction, type FractionResult } from "@/lib/math";
-import { roundDisplayedFraction } from "@/lib/rounding";
+import {
+  decimalApproximationNote,
+  percentApproximationNote,
+} from "@/lib/rounding";
 
 export type ConversionKind = "percent" | "decimal" | "fraction";
 
@@ -67,7 +70,7 @@ export function parseConversionSlug(slug: string): ParsedConversion | null {
     kind,
     fraction,
     label: conversionLabel(fraction, kind),
-    result: roundDisplayedFraction(evaluation.result, 4, 2),
+    result: evaluation.result,
   };
 }
 
@@ -119,11 +122,17 @@ export function conversionFaqs(conversion: ParsedConversion): ConversionFaq[] {
   return [
     {
       question: `What is ${fraction} as a percent?`,
-      answer: `${fraction} as a percent is ${result.percent}. Multiply ${result.numerator} by 100, then divide by ${result.denominator}.`,
+      answer: withApproximation(
+        `${fraction} as a percent is ${result.percent}. Multiply ${result.numerator} by 100, then divide by ${result.denominator}.`,
+        percentApproximationNote(result),
+      ),
     },
     {
       question: `What is ${fraction} as a decimal?`,
-      answer: `${fraction} as a decimal is ${result.decimal}. Divide ${result.numerator} by ${result.denominator}.`,
+      answer: withApproximation(
+        `${fraction} as a decimal is ${result.decimal}. Divide ${result.numerator} by ${result.denominator}.`,
+        decimalApproximationNote(result),
+      ),
     },
     {
       question: `What is ${fraction} in simplest form?`,
@@ -155,7 +164,7 @@ export function workedExampleResults(conversion: ParsedConversion) {
       continue;
     }
 
-    examples.push(roundDisplayedFraction(evaluation.result, 4, 2));
+    examples.push(evaluation.result);
     seen.add(candidate);
   }
 
@@ -200,6 +209,10 @@ export function staticConversionParams() {
   }
 
   return params;
+}
+
+function withApproximation(sentence: string, note: string | null) {
+  return note ? `${sentence} ${note}` : sentence;
 }
 
 function conversionLabel(fraction: string, kind: ConversionKind) {

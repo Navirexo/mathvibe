@@ -36,7 +36,7 @@ export function HomeExplorer() {
       <section
         id="categories"
         aria-labelledby="categories-heading"
-        className="relative scroll-mt-24"
+        className="relative scroll-mt-24 overflow-x-clip"
       >
         <AmbientGlow className="-inset-x-8 -top-8 h-64" />
         <h2 id="categories-heading" className="relative text-xl font-semibold text-ink">
@@ -71,7 +71,7 @@ export function HomeExplorer() {
       <section
         id="popular"
         aria-labelledby="popular-heading"
-        className="relative scroll-mt-24"
+        className="relative scroll-mt-24 overflow-x-clip"
       >
         <AmbientGlow className="-inset-x-8 -top-6 h-72" />
         <h2 id="popular-heading" className="relative text-xl font-semibold text-ink">

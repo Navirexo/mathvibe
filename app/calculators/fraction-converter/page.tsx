@@ -5,7 +5,10 @@ import { FaqAccordion } from "@/components/content/FaqAccordion";
 import { FractionWriteup } from "@/components/content/FractionWriteup";
 import { GuideSection } from "@/components/content/GuideSection";
 import { evaluateFraction } from "@/lib/math";
-import { roundDisplayedFraction } from "@/lib/rounding";
+import {
+  decimalApproximationNote,
+  percentApproximationNote,
+} from "@/lib/rounding";
 import { pageMetadata } from "@/lib/seo";
 import { siteUrl } from "@/lib/site";
 
@@ -18,7 +21,7 @@ const workedExamples = examples.map((example) => {
     throw new Error(`Expected ${example} to convert.`);
   }
 
-  return roundDisplayedFraction(evaluation.result, 6, 2);
+  return evaluation.result;
 });
 
 const pageDescription =
@@ -76,12 +79,12 @@ const structuredData = {
         {
           "@type": "HowToStep",
           name: "Divide to find the decimal",
-          text: "Decimal = numerator ÷ denominator. For 5/6, the page shows 5 ÷ 6 = 0.833333. The exact decimal repeats as 0.8(3).",
+          text: `Decimal = numerator ÷ denominator. For 5/6, 5 ÷ 6 = ${workedExamples[0].decimal}. ${decimalApproximationNote(workedExamples[0]) ?? ""}`.trim(),
         },
         {
           "@type": "HowToStep",
           name: "Multiply by 100 to find the percent",
-          text: "Percent = (numerator × 100) ÷ denominator. For 5/6, the page shows 500 ÷ 6 = 83.33%. The exact percent repeats as 83.(3)%.",
+          text: `Percent = (numerator × 100) ÷ denominator. For 5/6, 500 ÷ 6 = ${workedExamples[0].percent}. ${percentApproximationNote(workedExamples[0]) ?? ""}`.trim(),
         },
         {
           "@type": "HowToStep",
@@ -141,7 +144,7 @@ export default function FractionConverterPage() {
 
       <AdSlot placement="rectangle" />
 
-      <FractionWriteup examples={workedExamples} rounded decimalPlaces={6} percentPlaces={2} />
+      <FractionWriteup examples={workedExamples} />
 
       <section aria-labelledby="converter-faq-heading" className="max-w-3xl">
         <h2 id="converter-faq-heading" className="text-xl font-semibold text-ink">

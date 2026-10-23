@@ -1,6 +1,11 @@
 import { AmbientGlow } from "@/components/home/AmbientGlow";
 import { FaqAccordion, type FaqItem } from "@/components/content/FaqAccordion";
 import { Card } from "@/components/ui/Card";
+import { evaluateFraction } from "@/lib/math";
+import {
+  decimalApproximationNote,
+  percentApproximationNote,
+} from "@/lib/rounding";
 import type { ReactNode } from "react";
 
 const steps = [
@@ -39,11 +44,15 @@ const reasons = [
   },
 ] as const;
 
+const repeatingExample = evaluateFraction("5/6");
+const repeatingResult = repeatingExample.status === "ok" ? repeatingExample.result : null;
+
 const faqs: FaqItem[] = [
   {
     question: "How accurate are MathVibe calculations?",
-    answer:
-      "The Fraction & Decimal Converter shows 5/6 as 0.833333 and 83.33%, rounded to 6 decimal places and 2 percent places. Conversion pages round the same fraction to 0.8333 and 83.33%. The exact repeating value is 0.8(3), or 83.(3)%.",
+    answer: repeatingResult
+      ? `5/6 is exactly ${repeatingResult.decimal}, or ${repeatingResult.percent}. ${decimalApproximationNote(repeatingResult)} ${percentApproximationNote(repeatingResult)} The fraction converter, guides, and conversion pages use this same display.`
+      : "Repeating decimals are shown exactly, with the repeating digits in parentheses.",
   },
   {
     question: "How do I use MathVibe?",
@@ -69,22 +78,10 @@ const faqs: FaqItem[] = [
 
 export function GuideSection({
   includeSchema = false,
-  roundedAccuracy = false,
 }: {
   includeSchema?: boolean;
-  roundedAccuracy?: boolean;
 }) {
-  const items = roundedAccuracy
-    ? faqs.map((faq) =>
-        faq.question === "How accurate are MathVibe calculations?"
-          ? {
-              ...faq,
-              answer:
-                "Fraction conversions on these pages round decimals to 4 places and percentages to 2 places. 5/6 is shown as 0.8333 and 83.33%.",
-            }
-          : faq,
-      )
-    : faqs;
+  const items = faqs;
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -99,7 +96,7 @@ export function GuideSection({
   };
 
   return (
-    <section id="how-to-use" aria-labelledby="how-to-use-heading" className="relative">
+    <section id="how-to-use" aria-labelledby="how-to-use-heading" className="relative overflow-x-clip">
       <AmbientGlow className="-inset-x-8 -top-8 h-64" />
       <div className="relative flex flex-col gap-12 sm:gap-14">
         <div>

@@ -1,4 +1,52 @@
-import type { FractionResult } from "@/lib/math";
+import { formatFractionResult, type FractionResult } from "@/lib/math";
+
+export const DISPLAY_DECIMAL_PLACES = 6;
+export const DISPLAY_PERCENT_PLACES = 2;
+
+export function decimalApproximation(result: FractionResult) {
+  const rounded = formatRoundedQuotient(
+    result.numerator,
+    result.denominator,
+    DISPLAY_DECIMAL_PLACES,
+  );
+
+  return rounded === result.decimal ? null : rounded;
+}
+
+export function percentApproximation(result: FractionResult) {
+  const rounded = `${formatRoundedQuotient(
+    result.numerator * 100,
+    result.denominator,
+    DISPLAY_PERCENT_PLACES,
+  )}%`;
+
+  return rounded === result.percent ? null : rounded;
+}
+
+export function decimalApproximationNote(result: FractionResult) {
+  const rounded = decimalApproximation(result);
+
+  return rounded
+    ? `Rounded to ${DISPLAY_DECIMAL_PLACES} decimal places: ${rounded}.`
+    : null;
+}
+
+export function percentApproximationNote(result: FractionResult) {
+  const rounded = percentApproximation(result);
+
+  return rounded
+    ? `Rounded to ${DISPLAY_PERCENT_PLACES} percent places: ${rounded}.`
+    : null;
+}
+
+export function formatFractionCopy(result: FractionResult) {
+  const notes = [decimalApproximationNote(result), percentApproximationNote(result)].filter(
+    (note): note is string => note !== null,
+  );
+  const exact = formatFractionResult(result);
+
+  return notes.length === 0 ? exact : `${exact}\n${notes.join("\n")}`;
+}
 
 export function roundDisplayedFraction(
   result: FractionResult,
