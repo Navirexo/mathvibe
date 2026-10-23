@@ -27,7 +27,7 @@ export function FaqAccordion({
 
         return (
           <Card key={item.question}>
-            <h3 className="text-base font-semibold text-ink">
+            <h3 className="text-lg font-semibold text-ink">
               <button
                 id={buttonId}
                 type="button"
@@ -53,7 +53,7 @@ export function FaqAccordion({
                 inert={open ? undefined : true}
                 className="overflow-hidden"
               >
-                <p className="pt-3 text-sm text-muted sm:text-base">{item.answer}</p>
+                <p className="pt-3 text-base text-slate-200">{item.answer}</p>
               </div>
             </div>
           </Card>

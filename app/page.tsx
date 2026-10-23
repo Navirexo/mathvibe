@@ -26,7 +26,7 @@ export default function Home() {
           <h1 className="mt-4 max-w-4xl text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
             Less Friction. More Done. Smart Math Tools & Calculators.
           </h1>
-          <p className="mt-4 max-w-2xl text-base text-muted sm:text-lg">
+          <p className="mt-4 max-w-2xl text-base text-slate-200 sm:text-lg">
             Fast, accessible, and step-by-step mathematical solutions.
           </p>
         </div>

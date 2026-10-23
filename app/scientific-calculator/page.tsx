@@ -39,8 +39,8 @@ export default function ScientificCalculatorPage() {
         <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
           Scientific Calculator
         </h1>
-        <p className="mt-4 max-w-2xl text-base text-muted sm:text-lg">{description}</p>
-        <p className="mt-4 text-sm text-muted">
+        <p className="mt-4 max-w-2xl text-base text-slate-200 sm:text-lg">{description}</p>
+        <p className="mt-4 text-base text-slate-200">
           Need a measurement instead?{" "}
           <Link href="/unit-converter" className="text-[#00D1F7] underline-offset-4 hover:underline">
             Open the unit converter
@@ -53,13 +53,13 @@ export default function ScientificCalculatorPage() {
       <article className="flex max-w-3xl flex-col gap-10">
         <section>
           <h2 className="text-xl font-semibold text-ink">How It Works</h2>
-          <p className="mt-3 text-sm text-muted sm:text-base">
+          <p className="mt-3 text-base text-slate-200">
             Type an expression. MathVibe reads numbers, operators, parentheses, and named functions, then evaluates them with ordinary precedence: parentheses first, then powers, then multiplication and division, then addition and subtraction.
           </p>
         </section>
         <section>
           <h2 className="text-xl font-semibold text-ink">Formula & Logic Explanation</h2>
-          <div className="mt-3 space-y-3 text-sm text-muted sm:text-base">
+          <div className="mt-3 space-y-3 text-base text-slate-200">
             <p>Powers use a^b. For example, 2^3 = 8.</p>
             <p>In degrees, sin(θ) = sin(θ × π ÷ 180). In radians, the angle is used directly.</p>
             <p>Scientific notation splits a value into a coefficient from 1 up to, but not including, 10, multiplied by a power of ten. 6.02e23 is already in that form.</p>
@@ -67,7 +67,7 @@ export default function ScientificCalculatorPage() {
         </section>
         <section>
           <h2 className="text-xl font-semibold text-ink">Step-by-Step Examples</h2>
-          <div className="mt-3 space-y-3 text-sm text-muted sm:text-base">
+          <div className="mt-3 space-y-3 text-base text-slate-200">
             <p>2 + 3 × 4 = 2 + 12 = 14. Multiplication happens before addition.</p>
             <p>sin(30) in degrees = 0.5. The calculator converts 30° to π/6 radians, then takes the sine.</p>
             <p>sqrt(9) = 3, and 2^10 = 1024.</p>

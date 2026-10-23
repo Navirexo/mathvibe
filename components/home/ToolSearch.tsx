@@ -51,7 +51,7 @@ export function ToolSearch({
           </Button>
         ) : null}
       </div>
-      <p aria-live="polite" className="text-sm text-muted">
+      <p aria-live="polite" className="text-base text-slate-200">
         {status}
       </p>
     </form>

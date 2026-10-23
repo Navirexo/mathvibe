@@ -114,11 +114,11 @@ export default function FractionConverterPage() {
         <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
           Fraction & Decimal Converter
         </h1>
-        <p className="mt-4 max-w-2xl text-base text-muted sm:text-lg">
+        <p className="mt-4 max-w-2xl text-base text-slate-200 sm:text-lg">
           Turn a fraction into a decimal, a percent, and equivalent fractions.
           The steps stay visible so the result can be checked.
         </p>
-        <ul className="mt-6 flex flex-col gap-2 text-sm">
+        <ul className="mt-6 flex flex-col gap-2 text-base">
           <li>
             <Link href="/convert/5-6-as-a-percent" className="text-[#00D1F7] underline-offset-4 hover:underline">
               What is 5/6 as a percent?

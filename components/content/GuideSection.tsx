@@ -109,7 +109,7 @@ export function GuideSection({
           <h2 id="how-to-use-heading" className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
             How to Use MathVibe
           </h2>
-          <p className="mt-3 max-w-2xl text-sm text-muted sm:text-base">
+          <p className="mt-3 max-w-2xl text-base text-slate-200">
             Pick a tool, enter the expression, and read a solution that shows its work.
           </p>
           <ol className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -123,7 +123,7 @@ export function GuideSection({
                     </span>
                   </div>
                   <h3 className="mt-5 text-lg font-semibold text-ink">{step.title}</h3>
-                  <p className="mt-2 text-sm text-muted">{step.body}</p>
+                  <p className="mt-2 text-base text-slate-200">{step.body}</p>
                 </Card>
               </li>
             ))}
@@ -140,7 +140,7 @@ export function GuideSection({
                 <Card className="flex h-full flex-col">
                   <IconFrame>{reason.icon}</IconFrame>
                   <h3 className="mt-5 text-lg font-semibold text-ink">{reason.title}</h3>
-                  <p className="mt-2 text-sm text-muted">{reason.body}</p>
+                  <p className="mt-2 text-base text-slate-200">{reason.body}</p>
                 </Card>
               </li>
             ))}
@@ -151,7 +151,7 @@ export function GuideSection({
           <h2 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
             Frequently Asked Questions
           </h2>
-          <p className="mt-3 max-w-2xl text-sm text-muted sm:text-base">
+          <p className="mt-3 max-w-2xl text-base text-slate-200">
             Accuracy, everyday use, and how the step-by-step solvers are built.
           </p>
           <div className="mt-6">

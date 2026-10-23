@@ -19,7 +19,7 @@ export function FractionWriteup({
         <h2 id="how-it-works-heading" className="text-xl font-semibold text-ink">
           How It Works
         </h2>
-        <p className="mt-3 text-sm text-muted sm:text-base">
+        <p className="mt-3 text-base text-slate-200">
           A fraction is a division problem. {focus.fraction} means{" "}
           {focus.numerator} divided by {focus.denominator}. MathVibe divides
           those whole numbers exactly, writes the decimal, then multiplies by
@@ -34,7 +34,7 @@ export function FractionWriteup({
         <h2 id="formula-heading" className="text-xl font-semibold text-ink">
           Formula & Logic Explanation
         </h2>
-        <div className="mt-3 space-y-3 text-sm text-muted sm:text-base">
+        <div className="mt-3 space-y-3 text-base text-slate-200">
           <p>
             Decimal = numerator ÷ denominator. For {focus.fraction}, that is{" "}
             {focus.numerator} ÷ {focus.denominator} = {focus.decimal}.
@@ -65,7 +65,7 @@ export function FractionWriteup({
               <h3 className="text-lg font-semibold text-ink">
                 {example.fraction} = {example.decimal} = {example.percent}
               </h3>
-              <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-muted">
+              <ol className="mt-3 list-decimal space-y-2 pl-5 text-base text-slate-200">
                 {example.steps.map((step) => (
                   <li key={step.title}>
                     <span className="font-medium text-ink">{step.title}. </span>

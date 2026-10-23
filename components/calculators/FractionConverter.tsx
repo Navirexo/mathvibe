@@ -75,7 +75,7 @@ export function FractionConverter() {
               ))}
             </ul>
           ) : (
-            <p className="mt-2 text-sm text-muted">
+            <p className="mt-2 text-base text-slate-200">
               Equivalent fractions appear here after you enter a fraction.
             </p>
           )}
@@ -85,7 +85,7 @@ export function FractionConverter() {
           {result ? (
             <StepList steps={result.steps} />
           ) : (
-            <p className="mt-2 text-sm text-muted">
+            <p className="mt-2 text-base text-slate-200">
               The division, percent, and simplification steps appear here.
             </p>
           )}
@@ -130,7 +130,7 @@ function StepList({ steps }: { steps: FractionResult["steps"] }) {
           </span>
           <div>
             <p className="font-medium text-ink">{step.title}</p>
-            <p className="mt-1 text-sm text-muted">{step.body}</p>
+            <p className="mt-1 text-base text-slate-200">{step.body}</p>
           </div>
         </li>
       ))}

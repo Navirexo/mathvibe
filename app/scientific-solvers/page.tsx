@@ -39,8 +39,8 @@ export default function ScientificSolversPage() {
         <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
           Equation Solver
         </h1>
-        <p className="mt-4 max-w-2xl text-base text-muted sm:text-lg">{description}</p>
-        <p className="mt-4 text-sm text-muted">
+        <p className="mt-4 max-w-2xl text-base text-slate-200 sm:text-lg">{description}</p>
+        <p className="mt-4 text-base text-slate-200">
           For a single expression, use the{" "}
           <Link href="/scientific-calculator" className="text-[#00D1F7] underline-offset-4 hover:underline">
             scientific calculator
@@ -53,13 +53,13 @@ export default function ScientificSolversPage() {
       <article className="flex max-w-3xl flex-col gap-10">
         <section>
           <h2 className="text-xl font-semibold text-ink">How It Works</h2>
-          <p className="mt-3 text-sm text-muted sm:text-base">
+          <p className="mt-3 text-base text-slate-200">
             Type an equation or an expression. Solve moves every term to one side, then uses linear rearrangement or the quadratic formula. Simplify distributes parentheses and adds coefficients that share the same power of x.
           </p>
         </section>
         <section>
           <h2 className="text-xl font-semibold text-ink">Formula & Logic Explanation</h2>
-          <div className="mt-3 space-y-3 text-sm text-muted sm:text-base">
+          <div className="mt-3 space-y-3 text-base text-slate-200">
             <p>A linear equation ax + b = 0 has the solution x = −b ÷ a when a is not zero.</p>
             <p>A quadratic equation ax² + bx + c = 0 uses x = (−b ± √(b² − 4ac)) ÷ 2a.</p>
             <p>Like terms add by their coefficients. 2x + 3x − x = (2 + 3 − 1)x = 4x.</p>
@@ -67,7 +67,7 @@ export default function ScientificSolversPage() {
         </section>
         <section>
           <h2 className="text-xl font-semibold text-ink">Step-by-Step Examples</h2>
-          <div className="mt-3 space-y-3 text-sm text-muted sm:text-base">
+          <div className="mt-3 space-y-3 text-base text-slate-200">
             <p>2x + 3 = 11 becomes 2x − 8 = 0, so x = 4.</p>
             <p>x² − 5x + 6 = 0 has discriminant 1, so x = 2 or x = 3.</p>
             <p>3(x + 2) + 4(x − 1) expands to 3x + 6 + 4x − 4, which simplifies to 7x + 2.</p>

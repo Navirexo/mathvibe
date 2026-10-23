@@ -118,7 +118,7 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
           <h1 className="mt-3 max-w-4xl text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
             {conversionHeadline(conversion)}
           </h1>
-          <p className="mt-4 max-w-2xl text-base text-muted sm:text-lg">
+          <p className="mt-4 max-w-2xl text-base text-slate-200 sm:text-lg">
             {metadata.description}
           </p>
         </header>
@@ -150,7 +150,7 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
                 </span>
                 <div>
                   <p className="font-medium text-ink">{step.title}</p>
-                  <p className="mt-1 text-sm text-muted">{step.body}</p>
+                  <p className="mt-1 text-base text-slate-200">{step.body}</p>
                 </div>
               </li>
             ))}
@@ -167,13 +167,13 @@ export default async function ConversionPage({ params }: ConvertPageProps) {
             <FaqAccordion items={faqs} idPrefix="conversion-faq" />
           </div>
           <Card className="mt-8">
-            <h3 className="text-base font-semibold text-ink">Related conversions</h3>
+            <h3 className="text-lg font-semibold text-ink">Related conversions</h3>
             <ul className="mt-4 flex flex-col gap-2">
               {related.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-[#00D1F7] underline-offset-4 hover:underline"
+                    className="text-base text-[#00D1F7] underline-offset-4 hover:underline"
                   >
                     {link.label}
                   </Link>
@@ -248,7 +248,7 @@ function ResultCard({
       >
         {value}
       </p>
-      {detail ? <p className="mt-3 text-sm text-muted">{detail}</p> : null}
+      {detail ? <p className="mt-3 text-base text-slate-200">{detail}</p> : null}
       {copyText ? <CopyResultBlock text={copyText} /> : null}
     </Card>
   );

@@ -38,8 +38,8 @@ export default function UnitConverterPage() {
         <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
           Unit Converter
         </h1>
-        <p className="mt-4 max-w-2xl text-base text-muted sm:text-lg">{description}</p>
-        <p className="mt-4 text-sm text-muted">
+        <p className="mt-4 max-w-2xl text-base text-slate-200 sm:text-lg">{description}</p>
+        <p className="mt-4 text-base text-slate-200">
           Need powers or trigonometry?{" "}
           <Link href="/scientific-calculator" className="text-[#00D1F7] underline-offset-4 hover:underline">
             Open the scientific calculator
@@ -52,19 +52,19 @@ export default function UnitConverterPage() {
       <article className="flex max-w-3xl flex-col gap-10">
         <section>
           <h2 className="text-xl font-semibold text-ink">How It Works</h2>
-          <p className="mt-3 text-sm text-muted sm:text-base">
+          <p className="mt-3 text-base text-slate-200">
             Choose length, mass, or volume, enter a value, and pick the starting and target units. Swap exchanges the two units. The result updates immediately, and the steps show the conversion through the base unit.
           </p>
         </section>
         <section>
           <h2 className="text-xl font-semibold text-ink">Formula & Logic Explanation</h2>
-          <p className="mt-3 text-sm text-muted sm:text-base">
+          <p className="mt-3 text-base text-slate-200">
             result = value × (factor of the source unit) ÷ (factor of the target unit). For length, the factors are in meters, so 1 km × 1000 ÷ 1 = 1000 m.
           </p>
         </section>
         <section>
           <h2 className="text-xl font-semibold text-ink">Step-by-Step Examples</h2>
-          <div className="mt-3 space-y-3 text-sm text-muted sm:text-base">
+          <div className="mt-3 space-y-3 text-base text-slate-200">
             <p>1 km = 1000 m.</p>
             <p>1 kg = 1000 g = 2.20462 lb.</p>
             <p>1 L = 1000 mL.</p>

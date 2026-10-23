@@ -130,7 +130,7 @@ export function UnitConverterTool() {
           <p className="mt-3 break-words text-4xl font-semibold tracking-tight text-cyan">
             {conversion ? conversion.result : "—"}
           </p>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-base text-slate-200">
             {conversion && toUnit ? toUnit.label : "Choose units to convert."}
           </p>
           <CopyResultBlock
@@ -143,7 +143,7 @@ export function UnitConverterTool() {
           <p className="mt-3 break-words text-4xl font-semibold tracking-tight text-violet">
             {conversion ? conversion.factor : "—"}
           </p>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-base text-slate-200">
             {conversion && fromUnit && toUnit
               ? `1 ${fromUnit.label.toLowerCase().replace(/s$/, "")} = ${conversion.factor} ${toUnit.label.toLowerCase()}`
               : "The direct factor appears here."}
@@ -161,13 +161,13 @@ export function UnitConverterTool() {
                 </span>
                 <div>
                   <p className="font-medium text-ink">{step.title}</p>
-                  <p className="mt-1 text-sm text-muted">{step.body}</p>
+                  <p className="mt-1 text-base text-slate-200">{step.body}</p>
                 </div>
               </li>
             ))}
           </ol>
         ) : (
-          <p className="mt-2 text-sm text-muted">Enter a value to see the conversion steps.</p>
+          <p className="mt-2 text-base text-slate-200">Enter a value to see the conversion steps.</p>
         )}
       </Card>
     </div>

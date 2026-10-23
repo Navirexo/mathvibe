@@ -80,13 +80,13 @@ export function EquationSolver() {
                   </span>
                   <div>
                     <p className="font-medium text-ink">{step.title}</p>
-                    <p className="mt-1 text-sm text-muted">{step.body}</p>
+                    <p className="mt-1 text-base text-slate-200">{step.body}</p>
                   </div>
                 </li>
               ))}
             </ol>
           ) : (
-            <p className="mt-2 text-sm text-muted">
+            <p className="mt-2 text-base text-slate-200">
               {evaluation.status === "incomplete"
                 ? "Finish the expression to see the steps."
                 : "The worked solution appears here."}

@@ -50,7 +50,7 @@ export function HomeExplorer() {
                   <h3 className="text-lg font-semibold text-ink">
                     {category.name}
                   </h3>
-                  <p className="mt-2 flex-1 text-sm text-muted">
+                  <p className="mt-2 flex-1 text-base text-slate-200">
                     {category.summary}
                   </p>
                   <Link
@@ -64,7 +64,7 @@ export function HomeExplorer() {
             ))}
           </ul>
         ) : (
-          <p className="relative mt-4 text-sm text-muted">No categories match this search.</p>
+          <p className="relative mt-4 text-base text-slate-200">No categories match this search.</p>
         )}
       </section>
 
@@ -87,7 +87,7 @@ export function HomeExplorer() {
                   <h3 className="mt-2 text-lg font-semibold text-ink">
                     {tool.name}
                   </h3>
-                  <p className="mt-2 flex-1 text-sm text-muted">{tool.summary}</p>
+                  <p className="mt-2 flex-1 text-base text-slate-200">{tool.summary}</p>
                   <Link
                     href={tool.href}
                     className={cn("mt-5 w-full", gradientActionClass)}
@@ -99,7 +99,7 @@ export function HomeExplorer() {
             ))}
           </ul>
         ) : (
-          <p className="relative mt-4 text-sm text-muted">No tools match this search.</p>
+          <p className="relative mt-4 text-base text-slate-200">No tools match this search.</p>
         )}
       </section>
     </>

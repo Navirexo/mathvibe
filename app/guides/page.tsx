@@ -39,8 +39,8 @@ export default function GuidesPage() {
         <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
           Educational Guides
         </h1>
-        <p className="mt-4 max-w-2xl text-base text-muted sm:text-lg">{description}</p>
-        <ul className="mt-4 flex flex-col gap-2 text-sm">
+        <p className="mt-4 max-w-2xl text-base text-slate-200 sm:text-lg">{description}</p>
+        <ul className="mt-4 flex flex-col gap-2 text-base">
           <li>
             <Link href="/scientific-calculator" className="text-[#00D1F7] underline-offset-4 hover:underline">
               Scientific calculator
@@ -63,13 +63,13 @@ export default function GuidesPage() {
       <article className="flex max-w-3xl flex-col gap-10">
         <section>
           <h2 className="text-xl font-semibold text-ink">How It Works</h2>
-          <p className="mt-3 text-sm text-muted sm:text-base">
+          <p className="mt-3 text-base text-slate-200">
             Choose a guide and type a value. The explanation is rebuilt from that value, so the same steps you see are the steps for your example.
           </p>
         </section>
         <section>
           <h2 className="text-xl font-semibold text-ink">Formula & Logic Explanation</h2>
-          <div className="mt-3 space-y-3 text-sm text-muted sm:text-base">
+          <div className="mt-3 space-y-3 text-base text-slate-200">
             <p>Scientific notation: n = m × 10^e, with 1 ≤ |m| &lt; 10.</p>
             <p>A fraction a/b becomes the decimal a ÷ b and the percent (a × 100) ÷ b.</p>
             <p>A power of ten, 10^e, moves the decimal point e places.</p>
@@ -77,7 +77,7 @@ export default function GuidesPage() {
         </section>
         <section>
           <h2 className="text-xl font-semibold text-ink">Step-by-Step Examples</h2>
-          <div className="mt-3 space-y-3 text-sm text-muted sm:text-base">
+          <div className="mt-3 space-y-3 text-base text-slate-200">
             <p>6.022e23 is already 6.022 × 10^23.</p>
             <p>3/4 = 0.75 = 75%.</p>
             <p>10^2 = 100 and 10^3 = 1000.</p>

@@ -54,7 +54,7 @@ export function ContactForm() {
       <Button type="submit" className="w-full sm:w-auto">
         Send message
       </Button>
-      <p className="text-sm text-muted">
+      <p className="text-base text-slate-200">
         Send opens your email app with this message addressed to {contactEmail}.
       </p>
     </form>
